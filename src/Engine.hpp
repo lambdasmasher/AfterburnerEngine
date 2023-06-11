@@ -16,6 +16,7 @@ public:
     Engine(int width, int height);
     ~Engine();
     void render();
+    static inline Engine *engine = nullptr;
 
 private:
     GLWrapper glWrapper;
@@ -25,6 +26,8 @@ private:
     float deltaTime;
     void updateDisplay();
 public:
+    inline int getDisplayWidth() { return width; }
+    inline int getDisplayHeight() { return height; }
     inline bool windowShouldClose() { return glfwWindowShouldClose(window); }
     inline float delta() { return deltaTime; }
 

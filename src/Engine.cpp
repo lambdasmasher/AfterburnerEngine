@@ -19,7 +19,7 @@ GLWrapper::~GLWrapper() {
 
 Engine::Engine(int width, int height) :
    glWrapper(width, height), window(glWrapper.window),
-    width(width), height(height) {}
+    width(width), height(height) { engine = this; }
 
 Engine::~Engine() {}
 
