@@ -1,21 +1,8 @@
 #include "Engine.hpp"
 
-Engine::Engine(int width, int height) :
-    width(width), height(height)
-{
-    initialize();
-}
+#include "GLResource.hpp"
 
-Engine::~Engine() {
-    glfwDestroyWindow(window);
-    glfwTerminate();
-}
-
-void Engine::render() {
-    updateDisplay();
-}
-
-void Engine::initialize() {
+GLWrapper::GLWrapper(int width, int height) {
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -23,6 +10,21 @@ void Engine::initialize() {
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);
     glewInit();
+}
+GLWrapper::~GLWrapper() {
+    GLResource::cleanup();
+    glfwDestroyWindow(window);
+    glfwTerminate();
+}
+
+Engine::Engine(int width, int height) :
+   glWrapper(width, height), window(glWrapper.window),
+    width(width), height(height) {}
+
+Engine::~Engine() {}
+
+void Engine::render() {
+    updateDisplay();
 }
 
 void Engine::updateDisplay() {
