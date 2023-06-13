@@ -13,6 +13,7 @@ public:
     }()) {};
     ~Vao() { glDeleteVertexArrays(1, &vaoId); };
     const GLuint vaoId;
+    inline void bind() { glBindVertexArray(vaoId); }
 };
 
 #endif /* VAO */

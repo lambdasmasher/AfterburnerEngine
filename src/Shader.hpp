@@ -2,6 +2,8 @@
 #define SHADER
 
 #include <GL/glew.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <unordered_map>
 #include <vector>
 #include <string>
@@ -21,6 +23,13 @@ public:
 
     inline void setFloat(const char *name, float f)
         { glUniform1f(locations[name], f); }
+    inline void setVec3(const char *name, const glm::vec3 &v)
+        { glUniform3f(locations[name], v.x, v.y, v.z); }
+    inline void setMat4(const char *name, const glm::mat4 &m)
+        { glUniformMatrix4fv(locations[name], 1, GL_FALSE, glm::value_ptr(m)); }
+    inline void setInt(const char *name, int i)
+        { glUniform1i(locations[name], i); }
+    
 private:
     void attachShader(const char *path, GLenum type);
     GLuint programId;

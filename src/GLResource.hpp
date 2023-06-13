@@ -6,7 +6,7 @@
 class GLResource {
 public:
     GLResource() { resources.push_back(this); }
-    virtual ~GLResource() = 0;
+    virtual ~GLResource() {};
     static void cleanup() {
         for (GLResource *resource : resources)
             delete resource;

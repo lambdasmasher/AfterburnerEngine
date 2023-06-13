@@ -1,16 +1,16 @@
 #include "Engine.hpp"
-#include <iostream>
 
 int main(void) {
     Engine engine(1920, 1080);
 
-    float time = 0.f;
+    Scene scene;
+    scene.camera = std::make_unique<Camera>(glm::vec3(0.f), 1.f, 5000.f, 50.f);
+    scene.terrain = std::make_unique<Terrain>(glm::vec3(-320.f, -10.f, -320.f), 16, 50.f);
+
     while (!engine.windowShouldClose()) {
-        glClearColor(1, 0, 0, 1);
-        glClear(GL_COLOR_BUFFER_BIT);
-        engine.render();
-        time += engine.delta();
-        std::cout << time << "\n";
+        scene.camera->move();
+        scene.camera->update();
+        engine.render(&scene);
     }
 
     return 0;

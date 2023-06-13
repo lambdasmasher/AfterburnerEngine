@@ -17,9 +17,19 @@ public:
     void update();
 };
 
+class Terrain {
+public:
+    Terrain(const glm::vec3 &position, int numTiles, float tileSize)
+        : position(position), numTiles(numTiles), tileSize(tileSize) {}
+    const glm::vec3 position;
+    const int numTiles;
+    const float tileSize;
+};
+
 class Scene {
 public:
     std::unique_ptr<Camera> camera;
+    std::unique_ptr<Terrain> terrain;
 };
 
 #endif /* SCENE */

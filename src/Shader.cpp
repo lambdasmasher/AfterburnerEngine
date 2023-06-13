@@ -48,6 +48,7 @@ void Shader::attachShader(const char *path, GLenum type) {
     std::string code;
     try {
         std::ifstream fin(path);
+        fin.exceptions(std::ifstream::failbit | std::ifstream::badbit);
         std::stringstream buf;
         buf << fin.rdbuf();
         fin.close();
@@ -69,7 +70,7 @@ void Shader::attachShader(const char *path, GLenum type) {
         printf("failed to compile shader file %s:\n%s\n", path, log);
         exit(0);
     }
-    
+
     glAttachShader(programId, shader);
     shaders.push_back(shader);
 }
