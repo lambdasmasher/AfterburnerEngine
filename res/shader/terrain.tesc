@@ -12,7 +12,7 @@ float tessFactor(vec3 p1, vec3 p2) {
     float minTess = 2.0;
     float maxTess = 32.0;
     float minDist = 10.0;
-    float maxDist = 350.0;
+    float maxDist = 500.0;
 
     d = clamp((d - minDist) / (maxDist - minDist), 0.0, 1.0);
 
