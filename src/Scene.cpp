@@ -6,18 +6,18 @@
 
 void Camera::move() {
     float delta = Engine::engine->delta();
-    float rot = 30.f * delta;
+    float rot = 60.f * delta;
     float move = 0.f, movey = 0.f;
 
     if (Engine::engine->isKeyDown(GLFW_KEY_W))
-        move = -10.f * delta;
+        move = -50.f * delta;
     else if (Engine::engine->isKeyDown(GLFW_KEY_S))
-        move = 10.f * delta;
+        move = 50.f * delta;
 
     if (Engine::engine->isKeyDown(GLFW_KEY_SPACE))
-        movey = 10.f * delta;
+        movey = 50.f * delta;
     else if (Engine::engine->isKeyDown(GLFW_KEY_LEFT_SHIFT))
-        movey = -10.f * delta;
+        movey = -50.f * delta;
 
     position.x += sinf(glm::radians(yaw)) * move;
     position.y += movey;
