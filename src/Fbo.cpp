@@ -6,6 +6,13 @@ Fbo::Fbo(int width, int height, const std::vector<GLenum> &attachments, const bo
     setup();
 }
 
+void Fbo::resize(int width, int height) {
+    this->width = width;
+    this->height = height;
+    cleanup();
+    setup();
+}
+
 void Fbo::setup() {
     bind();
     for (unsigned i = 0; i < attachments.size(); i++) {
