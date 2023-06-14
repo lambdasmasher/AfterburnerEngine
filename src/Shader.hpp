@@ -20,6 +20,11 @@ public:
     ~Shader();
     inline void start() { glUseProgram(programId); }
     inline void stop() { glUseProgram(0); }
+    inline void dispatchCompute(int x, int y, int z) {
+        assert(isCompute);
+        glDispatchCompute(x, y, z);
+        glFinish();
+    }
 
     inline void setFloat(const char *name, float f)
         { glUniform1f(locations[name], f); }

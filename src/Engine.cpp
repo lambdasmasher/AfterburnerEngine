@@ -44,6 +44,10 @@ Engine::Engine(int width, int height) :
         nullptr,
         "res/shader/terrain.frag",
         nullptr, {"position", "numTiles", "tileSize", "vpMatrix", "cameraPos", "tiling"}
+    ),
+    normalCompShader(
+        nullptr, nullptr, nullptr, nullptr, nullptr, "res/shader/normals.comp",
+        {"N", "strength"}
     )
 {
     engine = this;
@@ -52,6 +56,7 @@ Engine::Engine(int width, int height) :
 Engine::~Engine() {}
 
 void Engine::render(Scene *scene) {
+    glEnable(GL_DEPTH_TEST);
     glClearColor(0, 0, 0, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     if (isKeyDown(GLFW_KEY_F3)) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -88,8 +93,21 @@ void Engine::renderTerrain(Scene *scene) {
     terrainShader.setFloat("tiling", terrain->tiling);
     terrain->texture->bind(0);
     terrain->heightmap->bind(1);
+    terrain->normalmap->bind(2);
     dummyVao->bind();
     glPatchParameteri(GL_PATCH_VERTICES, 4);
     glDrawArraysInstanced(GL_PATCHES, 0, 4, terrain->numTiles * terrain->numTiles);
     terrainShader.stop();
+}
+
+void Engine::computeNormalMap(Texture *heightmap, Texture *normalmap, float strength) {
+    const int N = normalmap->width;
+    assert(N == normalmap->height && N % 16 == 0);
+    normalCompShader.start();
+    normalCompShader.setInt("N", N);
+    normalCompShader.setFloat("strength", strength);
+    heightmap->bind(0);
+    normalmap->bindImage(0);
+    normalCompShader.dispatchCompute(N/16, N/16, 1);
+    normalCompShader.stop();
 }

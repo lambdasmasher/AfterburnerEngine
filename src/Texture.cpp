@@ -12,7 +12,7 @@ Texture* Texture::loadFromImage(const char *path) {
         exit(0);
     }
 
-    Texture *texture = new Texture(GL_TEXTURE_2D);
+    Texture *texture = new Texture(GL_TEXTURE_2D, width, height);
     texture->bind(0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -34,12 +34,22 @@ Texture* Texture::loadHeightmap(const char *path) {
         exit(0);
     }
 
-    Texture *texture = new Texture(GL_TEXTURE_2D);
+    assert(width == height);
+    Texture *texture = new Texture(GL_TEXTURE_2D, width, height);
     texture->bind(0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_R16, width, height, 0, GL_RED, GL_UNSIGNED_SHORT, data);
 
     stbi_image_free(data);
+    return texture;
+}
+
+Texture* Texture::texStorage(int width, int height) {
+    Texture *texture = new Texture(GL_TEXTURE_2D, width, height);
+    texture->bind(0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA32F, width, height);
     return texture;
 }

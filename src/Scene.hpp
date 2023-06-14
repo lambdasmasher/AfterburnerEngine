@@ -21,13 +21,13 @@ public:
 
 class Terrain {
 public:
-    Terrain(const glm::vec3 &position, int numTiles, float tileSize, Texture *texture, float tiling, Texture *heightmap)
-        : position(position), numTiles(numTiles), tileSize(tileSize), texture(texture), heightmap(heightmap), tiling(tiling) {}
+    Terrain(const glm::vec3 &position, int numTiles, float tileSize, float tiling,
+                Texture *texture, Texture *heightmap, float normalStrength);
     const glm::vec3 position;
     const int numTiles;
     const float tileSize;
-    Texture *texture, *heightmap;
     float tiling;
+    Texture *texture, *heightmap, *normalmap;
 };
 
 class Scene {

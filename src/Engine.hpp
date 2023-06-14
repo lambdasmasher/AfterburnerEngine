@@ -5,6 +5,7 @@
 #include <GLFW/glfw3.h>
 
 #include "Scene.hpp"
+#include "Texture.hpp"
 #include "Vao.hpp"
 #include "Shader.hpp"
 
@@ -40,8 +41,12 @@ private:
     Vao * const dummyVao;
     void renderTerrain(Scene *scene);
 
+public:
+    void computeNormalMap(Texture *heightmap, Texture *normalmap, float strength);
+
 private:
     Shader terrainShader;
+    Shader normalCompShader;
 };
 
 #endif /* ENGINE */

@@ -46,3 +46,12 @@ void Camera::update() {
 
     vpMatrix = projectionMatrix * viewMatrix;
 }
+
+Terrain::Terrain(const glm::vec3 &position, int numTiles, float tileSize, float tiling,
+                Texture *texture, Texture *heightmap, float normalStrength) 
+        : position(position), numTiles(numTiles), tileSize(tileSize), tiling(tiling),
+                texture(texture), heightmap(heightmap)
+{
+    normalmap = Texture::texStorage(heightmap->width, heightmap->height);
+    Engine::engine->computeNormalMap(heightmap, normalmap, normalStrength);
+}
