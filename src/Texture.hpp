@@ -8,6 +8,7 @@
 class Texture : public GLResource {
 public:
     static Texture* loadFromImage(const char *path);
+    static Texture* loadHeightmap(const char *path);
     inline void bind(unsigned i) {
         glActiveTexture(GL_TEXTURE0 + i);
         glBindTexture(texType, texId);

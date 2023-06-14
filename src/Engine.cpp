@@ -87,6 +87,7 @@ void Engine::renderTerrain(Scene *scene) {
     terrainShader.setVec3("cameraPos", scene->camera->position);
     terrainShader.setFloat("tiling", terrain->tiling);
     terrain->texture->bind(0);
+    terrain->heightmap->bind(1);
     dummyVao->bind();
     glPatchParameteri(GL_PATCH_VERTICES, 4);
     glDrawArraysInstanced(GL_PATCHES, 0, 4, terrain->numTiles * terrain->numTiles);
