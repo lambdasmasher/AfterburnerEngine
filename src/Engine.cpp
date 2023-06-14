@@ -43,7 +43,7 @@ Engine::Engine(int width, int height) :
         "res/shader/terrain.tese",
         nullptr,
         "res/shader/terrain.frag",
-        nullptr, {"position", "numTiles", "tileSize", "vpMatrix", "cameraPos"}
+        nullptr, {"position", "numTiles", "tileSize", "vpMatrix", "cameraPos", "tiling"}
     )
 {
     engine = this;
@@ -85,6 +85,8 @@ void Engine::renderTerrain(Scene *scene) {
     terrainShader.setFloat("tileSize", terrain->tileSize);
     terrainShader.setMat4("vpMatrix", scene->camera->vpMatrix);
     terrainShader.setVec3("cameraPos", scene->camera->position);
+    terrainShader.setFloat("tiling", terrain->tiling);
+    terrain->texture->bind(0);
     dummyVao->bind();
     glPatchParameteri(GL_PATCH_VERTICES, 4);
     glDrawArraysInstanced(GL_PATCHES, 0, 4, terrain->numTiles * terrain->numTiles);

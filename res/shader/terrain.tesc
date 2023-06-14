@@ -2,6 +2,9 @@
 
 layout (vertices = 4) out;
 
+layout (location = 0) in vec2 inUv[];
+layout (location = 0) out vec2 outUv[];
+
 uniform vec3 cameraPos;
 
 float tessFactor(vec3 p1, vec3 p2) {
@@ -29,4 +32,5 @@ void main(void) {
         gl_TessLevelInner[1] = mix(gl_TessLevelOuter[2], gl_TessLevelOuter[1], 0.5);
     }
     gl_out[gl_InvocationID].gl_Position = gl_in[gl_InvocationID].gl_Position;
+    outUv[gl_InvocationID] = inUv[gl_InvocationID];
 }

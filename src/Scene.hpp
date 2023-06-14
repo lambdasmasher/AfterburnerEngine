@@ -5,6 +5,8 @@
 
 #include <memory>
 
+#include "Texture.hpp"
+
 class Camera {
 public:
     Camera(const glm::vec3 &position, float nearPlane, float farPlane, float fov)
@@ -19,11 +21,13 @@ public:
 
 class Terrain {
 public:
-    Terrain(const glm::vec3 &position, int numTiles, float tileSize)
-        : position(position), numTiles(numTiles), tileSize(tileSize) {}
+    Terrain(const glm::vec3 &position, int numTiles, float tileSize, Texture *texture, float tiling)
+        : position(position), numTiles(numTiles), tileSize(tileSize), texture(texture), tiling(tiling) {}
     const glm::vec3 position;
     const int numTiles;
     const float tileSize;
+    Texture *texture;
+    float tiling;
 };
 
 class Scene {

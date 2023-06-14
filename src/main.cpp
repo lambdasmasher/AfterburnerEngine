@@ -5,7 +5,8 @@ int main(void) {
 
     Scene scene;
     scene.camera = std::make_unique<Camera>(glm::vec3(0.f, 100.f, 0.f), 1.f, 5000.f, 50.f);
-    scene.terrain = std::make_unique<Terrain>(glm::vec3(-320.f, 0.f, -320.f), 16, 50.f);
+    scene.terrain = std::make_unique<Terrain>(glm::vec3(-320.f, 0.f, -320.f), 16, 50.f,
+                         Texture::loadFromImage("res/ground.png"), 100.f);
 
     while (!engine.windowShouldClose()) {
         scene.camera->move();
