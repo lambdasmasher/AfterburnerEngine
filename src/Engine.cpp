@@ -48,9 +48,14 @@ Engine::Engine(int width, int height) :
     normalCompShader(
         nullptr, nullptr, nullptr, nullptr, nullptr, "res/shader/normals.comp",
         {"N", "strength"}
+    ),
+    deferredShader(
+        "res/shader/deferred.vert", nullptr, nullptr, nullptr, "res/shader/deferred.frag", nullptr,
+        {"cameraPos", "invProjMatrix", "invViewMatrix"}
     )
 {
     engine = this;
+    deferredFbo = new Fbo(width, height, {GL_RGBA32F, GL_RGBA32F}, true);
 }
 
 Engine::~Engine() {}
@@ -59,10 +64,15 @@ void Engine::render(Scene *scene) {
     glEnable(GL_DEPTH_TEST);
     glClearColor(0, 0, 0, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    if (isKeyDown(GLFW_KEY_F3)) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    else glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
+    deferredFbo->bind();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    if (isKeyDown(GLFW_KEY_F3)) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     renderTerrain(scene);
+    deferredFbo->unbind();
+
+    doDeferredShading(scene);
+
     updateDisplay();
 }
 
@@ -75,7 +85,7 @@ void Engine::updateDisplay() {
     glfwGetFramebufferSize(window, &w, &h);
     if (w != width || h != height) {
         width = w; height = h;
-        // resize event
+        deferredFbo->resize(width, height);
     }
     glViewport(0, 0, width, height);
     glfwSwapBuffers(window);
@@ -110,4 +120,18 @@ void Engine::computeNormalMap(Texture *heightmap, Texture *normalmap, float stre
     normalmap->bindImage(0);
     normalCompShader.dispatchCompute(N/16, N/16, 1);
     normalCompShader.stop();
+}
+
+void Engine::doDeferredShading(Scene *scene) {
+    Camera *cam = scene->camera.get();
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    deferredShader.start();
+    deferredShader.setVec3("cameraPos", cam->position);
+    deferredShader.setMat4("invProjMatrix", glm::inverse(cam->projectionMatrix));
+    deferredShader.setMat4("invViewMatrix", glm::inverse(cam->viewMatrix));
+    deferredFbo->bindColourAttachment(0, 0);
+    deferredFbo->bindColourAttachment(1, 1);
+    dummyVao->bind();
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    deferredShader.stop();
 }

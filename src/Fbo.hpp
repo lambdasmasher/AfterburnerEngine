@@ -10,7 +10,7 @@ public:
     Fbo(int width, int height, const std::vector<GLenum> &attachments, bool hasDepth);
     ~Fbo() { cleanup(); glDeleteFramebuffers(1, &fboId); }
     void resize(int width, int height);
-    inline void bind() { glBindFramebuffer(GL_FRAMEBUFFER, fboId); }
+    void bind();
     inline void unbind() { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
     inline void bindColourAttachment(unsigned attach, unsigned tex) {
         glActiveTexture(GL_TEXTURE0 + tex);

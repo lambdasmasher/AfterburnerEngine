@@ -7,6 +7,7 @@
 #include "Scene.hpp"
 #include "Texture.hpp"
 #include "Vao.hpp"
+#include "Fbo.hpp"
 #include "Shader.hpp"
 
 class GLWrapper {
@@ -45,8 +46,13 @@ public:
     void computeNormalMap(Texture *heightmap, Texture *normalmap, float strength);
 
 private:
+    Fbo *deferredFbo;
+    void doDeferredShading(Scene *scene);
+
+private:
     Shader terrainShader;
     Shader normalCompShader;
+    Shader deferredShader;
 };
 
 #endif /* ENGINE */
