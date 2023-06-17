@@ -2,6 +2,7 @@
 #define TEXTURE
 
 #include <GL/glew.h>
+#include <glm/glm.hpp>
 
 #include "GLResource.hpp"
 
@@ -10,6 +11,7 @@ public:
     static Texture* loadFromImage(const char *path);
     static Texture* loadHeightmap(const char *path);
     static Texture* texStorage(int width, int height);
+    static Texture* atmosphereCubemap(glm::vec3 toLightVector, int N);
     inline void bind(unsigned i) {
         glActiveTexture(GL_TEXTURE0 + i);
         glBindTexture(texType, texId);

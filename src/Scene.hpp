@@ -34,6 +34,8 @@ class Scene {
 public:
     std::unique_ptr<Camera> camera;
     std::unique_ptr<Terrain> terrain;
+    glm::vec3 toLightVector;
+    Texture *atmosphereTexture;
 };
 
 #endif /* SCENE */

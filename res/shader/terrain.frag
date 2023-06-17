@@ -11,5 +11,5 @@ uniform float tiling;
 
 void main(void) {
     colour = texture(tex, uv * tiling);
-    normal = texture(normalmap, uv);
+    normal = vec4(texture(normalmap, uv).xyz, 1.0);
 }

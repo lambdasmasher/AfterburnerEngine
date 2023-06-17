@@ -51,7 +51,7 @@ Engine::Engine(int width, int height) :
     ),
     deferredShader(
         "res/shader/deferred.vert", nullptr, nullptr, nullptr, "res/shader/deferred.frag", nullptr,
-        {"cameraPos", "invProjMatrix", "invViewMatrix"}
+        {"toLightVector", "cameraPos", "invProjMatrix", "invViewMatrix"}
     )
 {
     engine = this;
@@ -62,7 +62,7 @@ Engine::~Engine() {}
 
 void Engine::render(Scene *scene) {
     glEnable(GL_DEPTH_TEST);
-    glClearColor(0, 0, 0, 1);
+    glClearColor(0, 0, 0, 0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     deferredFbo->bind();
@@ -126,11 +126,14 @@ void Engine::doDeferredShading(Scene *scene) {
     Camera *cam = scene->camera.get();
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     deferredShader.start();
+    deferredShader.setVec3("toLightVector", scene->toLightVector);
     deferredShader.setVec3("cameraPos", cam->position);
     deferredShader.setMat4("invProjMatrix", glm::inverse(cam->projectionMatrix));
     deferredShader.setMat4("invViewMatrix", glm::inverse(cam->viewMatrix));
     deferredFbo->bindColourAttachment(0, 0);
     deferredFbo->bindColourAttachment(1, 1);
+    deferredFbo->bindDepthAttachment(2);
+    scene->atmosphereTexture->bind(4);
     dummyVao->bind();
     glDrawArrays(GL_TRIANGLES, 0, 6);
     deferredShader.stop();
