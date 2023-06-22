@@ -6,6 +6,7 @@
 #include <memory>
 
 #include "Texture.hpp"
+#include "FFTWater.hpp"
 
 class Camera {
 public:
@@ -34,6 +35,7 @@ class Scene {
 public:
     std::unique_ptr<Camera> camera;
     std::unique_ptr<Terrain> terrain;
+    std::unique_ptr<FFTWater> fftwater;
     glm::vec3 toLightVector;
     Texture *atmosphereTexture;
 };

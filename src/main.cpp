@@ -10,6 +10,8 @@ int main(void) {
     scene.toLightVector = glm::vec3(0.f, 1.f, 0.5f);
     scene.atmosphereTexture = Texture::atmosphereCubemap(scene.toLightVector, 512);
 
+    scene.fftwater = std::make_unique<FFTWater>(512, 2.0f, 34.0f, 2000.0f, glm::vec2(1, 1));
+
     while (!engine.windowShouldClose()) {
         scene.camera->move();
         scene.camera->update();

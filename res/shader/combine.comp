@@ -1,0 +1,18 @@
+#version 430 core
+
+layout (local_size_x = 16, local_size_y = 16) in;
+
+layout (binding = 0, rgba32f) uniform image2D hktY;
+layout (binding = 1, rgba32f) uniform image2D hktX;
+layout (binding = 2, rgba32f) uniform image2D hktZ;
+layout (binding = 3, rgba32f) uniform image2D displacementMap;
+
+uniform int N;
+
+void main(void) {
+    ivec2 x = ivec2(gl_GlobalInvocationID.xy);
+    float d = (1.0 - 2.0 * ((x.x + x.y) % 2)) / float(N*N);
+    imageStore(displacementMap, x, vec4(imageLoad(hktX, x).r * d,
+                                        imageLoad(hktY, x).r * d,
+                                        imageLoad(hktZ, x).r * d, 1.0));
+}

@@ -1,0 +1,37 @@
+#version 430 core
+
+#define PI 3.14159265359 
+
+layout (local_size_x = 16, local_size_y = 16) in;
+
+layout (binding = 0, rgba32f) uniform image2D h0k;
+layout (binding = 1, rgba32f) uniform image2D hktY;
+layout (binding = 2, rgba32f) uniform image2D hktX;
+layout (binding = 3, rgba32f) uniform image2D hktZ;
+
+uniform int N;
+uniform float L;
+uniform float t;
+
+vec2 cx_mul(vec2 a, vec2 b) {
+    return vec2(a.x*b.x-a.y*b.y, a.x*b.y+a.y*b.x);
+}
+vec2 cx_conj(vec2 a) {
+    return vec2(a.x, -a.y);
+}
+
+void main(void) {
+    float n = gl_GlobalInvocationID.x - N/2.0;
+    float m = gl_GlobalInvocationID.y - N/2.0;
+    vec2 k = vec2(2.0 * PI * n / L, 2.0 * PI * m / L);
+    float lenk = max(length(k), 0.001);
+    float w = sqrt(9.81 * lenk);
+    vec4 data = imageLoad(h0k, ivec2(gl_GlobalInvocationID.xy));
+    vec2 exp_iwkt = vec2(cos(w * t), sin(w * t));
+    vec2 dy = cx_mul(data.rg, exp_iwkt) + cx_mul(data.ba, cx_conj(exp_iwkt));
+    vec2 dx = cx_mul(vec2(0.0, -k.x / lenk), dy);
+    vec2 dz = cx_mul(vec2(0.0, -k.y / lenk), dy);
+    imageStore(hktY, ivec2(gl_GlobalInvocationID.xy), vec4(dy, 0.0, 1.0));
+    imageStore(hktX, ivec2(gl_GlobalInvocationID.xy), vec4(dx, 0.0, 1.0));
+    imageStore(hktZ, ivec2(gl_GlobalInvocationID.xy), vec4(dz, 0.0, 1.0));
+}

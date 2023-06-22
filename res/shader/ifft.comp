@@ -1,0 +1,35 @@
+#version 430 core
+
+#define PI 3.14159265359 
+
+layout (local_size_x = 16, local_size_y = 16) in;
+
+layout (binding = 0, rgba32f) uniform image2D butterflyTexture;
+layout (binding = 1, rgba32f) uniform image2D ping;
+layout (binding = 2, rgba32f) uniform image2D pong;
+
+uniform int stage;
+uniform int vertical;
+
+vec2 cx_mul(vec2 a, vec2 b) {
+    return vec2(a.x*b.x-a.y*b.y, a.x*b.y+a.y*b.x);
+}
+
+void main(void) {
+    ivec2 x = ivec2(gl_GlobalInvocationID.xy);
+    vec4 data;
+    vec2 p, q, w;
+    if (vertical == 1) {
+        data = imageLoad(butterflyTexture, ivec2(stage, x.y));
+        p = imageLoad(ping, ivec2(x.x, data.z)).rg;
+        q = imageLoad(ping, ivec2(x.x, data.w)).rg;
+        w = data.rg;
+    } else {
+        data = imageLoad(butterflyTexture, ivec2(stage, x.x));
+        p = imageLoad(ping, ivec2(data.z, x.y)).rg;
+        q = imageLoad(ping, ivec2(data.w, x.y)).rg;
+        w = data.rg;
+    }
+    vec2 ans = p + cx_mul(w, q);
+    imageStore(pong, x, vec4(ans, 0.0, 1.0));
+}
