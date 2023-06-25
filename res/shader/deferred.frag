@@ -4,7 +4,8 @@ layout (location = 0) in vec2 uv;
 
 layout (binding = 0) uniform sampler2D colourTexture;
 layout (binding = 1) uniform sampler2D normalTexture;
-layout (binding = 2) uniform sampler2D depthTexture;
+layout (binding = 2) uniform sampler2D materialTexture;
+layout (binding = 3) uniform sampler2D depthTexture;
 layout (binding = 4) uniform samplerCube atmosphereTexture;
 
 layout (location = 0) out vec4 outColour;
@@ -16,15 +17,18 @@ uniform mat4 invViewMatrix;
 
 float ambientFactor = 0.3;
 vec3 lightColour = vec3(1.0);
-vec3 blinnPhong(vec3 colour, vec3 normal, vec3 position) {
+vec3 blinnPhong(vec3 colour, vec3 normal, vec3 position, vec4 materialData) {
     vec3 toLightDir = normalize(toLightVector);
     vec3 ambient = colour * ambientFactor;
     vec3 diffuse = colour * max(dot(toLightDir, normal), 0.0);
 
+    float reflectivity = materialData.r;
+    float smoothness = materialData.g;
+
     vec3 viewDir = normalize(cameraPos - position);
     vec3 halfwayDir = normalize(toLightDir + viewDir);
-    float spec = pow(max(dot(normal, halfwayDir), 0.0), 32.0);
-    vec3 specular = lightColour * spec * 0.0;
+    float spec = pow(max(dot(normal, halfwayDir), 0.0), smoothness);
+    vec3 specular = lightColour * spec * reflectivity;
 
     return ambient + diffuse + specular;
 }
@@ -43,8 +47,9 @@ void main(void) {
     vec4 rawNormal = texture(normalTexture, uv);
     vec3 normal = normalize(rawNormal.xyz);
     vec3 position = worldPosFromDepth(texture(depthTexture, uv).r);
+    vec4 materialData = texture(materialTexture, uv);
     if (rawNormal.a > 0.5) {
-        outColour = vec4(blinnPhong(colour, normal, position), 1.0);
+        outColour = vec4(blinnPhong(colour, normal, position, materialData), 1.0);
     } else {
         outColour = texture(atmosphereTexture, position - cameraPos);
     }

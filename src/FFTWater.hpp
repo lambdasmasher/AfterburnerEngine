@@ -10,6 +10,10 @@ class FFTWater {
 public:
     FFTWater(int N, float A, float V, float L, glm::vec2 w, float normalStrength);
     void update(float delta);
+    glm::vec3 position;
+    int numTiles;
+    float tileSize;
+    float tiling;
     Texture * const h0kTexture;
     Texture * const hktY;
     Texture * const hktX;

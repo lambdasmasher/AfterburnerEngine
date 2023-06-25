@@ -45,6 +45,14 @@ Engine::Engine(int width, int height) :
         "res/shader/terrain.frag",
         nullptr, {"position", "numTiles", "tileSize", "vpMatrix", "cameraPos", "tiling"}
     ),
+    waterShader(
+        "res/shader/terrain.vert",
+        "res/shader/terrain.tesc",
+        "res/shader/water.tese",
+        nullptr,
+        "res/shader/water.frag",
+        nullptr, {"position", "numTiles", "tileSize", "vpMatrix", "cameraPos", "tiling"}
+    ),
     normalCompShader(
         nullptr, nullptr, nullptr, nullptr, nullptr, "res/shader/normals.comp",
         {"N", "strength"}
@@ -55,7 +63,7 @@ Engine::Engine(int width, int height) :
     )
 {
     engine = this;
-    deferredFbo = new Fbo(width, height, {GL_RGBA32F, GL_RGBA32F}, true);
+    deferredFbo = new Fbo(width, height, {GL_RGBA32F, GL_RGBA32F, GL_RGBA32F}, true);
 }
 
 Engine::~Engine() {}
@@ -69,6 +77,7 @@ void Engine::render(Scene *scene) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     if (isKeyDown(GLFW_KEY_F3)) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     renderTerrain(scene);
+    renderWater(scene);
     deferredFbo->unbind();
 
     doDeferredShading(scene);
@@ -110,6 +119,24 @@ void Engine::renderTerrain(Scene *scene) {
     terrainShader.stop();
 }
 
+void Engine::renderWater(Scene *scene) {
+    FFTWater *water = scene->fftwater.get();
+    water->update(delta() * 4.0f);
+    waterShader.start();
+    waterShader.setVec3("position", water->position);
+    waterShader.setInt("numTiles", water->numTiles);
+    waterShader.setFloat("tileSize", water->tileSize);
+    waterShader.setMat4("vpMatrix", scene->camera->vpMatrix);
+    waterShader.setVec3("cameraPos", scene->camera->position);
+    waterShader.setFloat("tiling", water->tiling);
+    water->displacementMap->bind(0);
+    water->normalMap->bind(1);
+    dummyVao->bind();
+    glPatchParameteri(GL_PATCH_VERTICES, 4);
+    glDrawArraysInstanced(GL_PATCHES, 0, 4, water->numTiles * water->numTiles);
+    waterShader.stop();
+}
+
 void Engine::computeNormalMap(Texture *heightmap, Texture *normalmap, float strength) {
     const int N = normalmap->width;
     assert(N == normalmap->height && N % 16 == 0);
@@ -132,7 +159,8 @@ void Engine::doDeferredShading(Scene *scene) {
     deferredShader.setMat4("invViewMatrix", glm::inverse(cam->viewMatrix));
     deferredFbo->bindColourAttachment(0, 0);
     deferredFbo->bindColourAttachment(1, 1);
-    deferredFbo->bindDepthAttachment(2);
+    deferredFbo->bindColourAttachment(2, 2);
+    deferredFbo->bindDepthAttachment(3);
     scene->atmosphereTexture->bind(4);
     dummyVao->bind();
     glDrawArrays(GL_TRIANGLES, 0, 6);

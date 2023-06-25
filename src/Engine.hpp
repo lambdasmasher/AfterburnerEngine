@@ -41,6 +41,7 @@ public:
 private:
     Vao * const dummyVao;
     void renderTerrain(Scene *scene);
+    void renderWater(Scene *scene);
 
 public:
     void computeNormalMap(Texture *heightmap, Texture *normalmap, float strength);
@@ -51,6 +52,7 @@ private:
 
 private:
     Shader terrainShader;
+    Shader waterShader;
     Shader normalCompShader;
     Shader deferredShader;
 };
