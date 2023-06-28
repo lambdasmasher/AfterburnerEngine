@@ -7,6 +7,9 @@ uniform float tiling;
 
 layout (location = 0) in vec2 inUv[];
 layout (location = 0) out vec2 outUv;
+layout (location = 1) out vec4 outClipSpace;
+layout (location = 2) out vec3 outWorldSpace;
+layout (location = 3) out vec4 outClipSpace0;
 
 layout (binding = 0) uniform sampler2D displacementMap;
 
@@ -18,7 +21,10 @@ void main(void) {
     vec4 pos1 = mix(gl_in[0].gl_Position, gl_in[1].gl_Position, gl_TessCoord.x);
     vec4 pos2 = mix(gl_in[3].gl_Position, gl_in[2].gl_Position, gl_TessCoord.x);
     vec4 pos = mix(pos1, pos2, gl_TessCoord.y);
+    outClipSpace0 = vpMatrix * pos;
     pos.xyz += texture(displacementMap, outUv * tiling).xyz * vec3(-1.5, 1.0, -1.5);
 
-    gl_Position = vpMatrix * pos;
+    outWorldSpace = pos.xyz;
+    outClipSpace = vpMatrix * pos;
+    gl_Position = outClipSpace;
 }

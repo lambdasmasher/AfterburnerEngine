@@ -5,8 +5,8 @@ uniform int numTiles;
 uniform float tileSize;
 
 vec3 vertices[4] = vec3[4](
-    vec3(0.0, 0.0, 0.0), vec3(1.0, 0.0, 0.0),
-    vec3(1.0, 0.0, 1.0), vec3(0.0, 0.0, 1.0)
+    vec3(0.0, 0.0, 0.0), vec3(0.0, 0.0, 1.0),
+    vec3(1.0, 0.0, 1.0), vec3(1.0, 0.0, 0.0)
 );
 
 layout (location = 0) out vec2 uv;

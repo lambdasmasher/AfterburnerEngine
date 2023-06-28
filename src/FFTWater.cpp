@@ -144,7 +144,9 @@ vec2 FFTWater::h0k(vec2 k) {
     float lenk = max(length(k), 0.001f);
     float Ph = A * (expf(-1.0f / (lenk*L*lenk*L)) / powf(lenk, 4.0f))
                  * powf(fabsf(dot(k / lenk, normalize(w))), 2.0f);
-    static std::mt19937 rng(time(NULL));
-    std::normal_distribution<float> nd(0.0f, 1.0f);
-    return 1.0f / sqrtf(2.0f) * vec2(nd(rng), nd(rng)) * sqrtf(Ph); 
+    static std::mt19937 rng(0x1337);
+    static std::normal_distribution<float> nd(0.0f, 1.0f);
+    float re = nd(rng);
+    float im = nd(rng);
+    return 1.0f / sqrtf(2.0f) * vec2(re, im) * sqrtf(Ph); 
 }

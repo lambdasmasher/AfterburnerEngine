@@ -30,6 +30,8 @@ public:
         { glUniform1f(locations[name], f); }
     inline void setVec3(const char *name, const glm::vec3 &v)
         { glUniform3f(locations[name], v.x, v.y, v.z); }
+    inline void setVec4(const char *name, const glm::vec4 &v)
+        { glUniform4f(locations[name], v.x, v.y, v.z, v.w); }
     inline void setMat4(const char *name, const glm::mat4 &m)
         { glUniformMatrix4fv(locations[name], 1, GL_FALSE, glm::value_ptr(m)); }
     inline void setInt(const char *name, int i)

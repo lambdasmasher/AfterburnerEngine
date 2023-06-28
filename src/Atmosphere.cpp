@@ -14,10 +14,11 @@ static vec2 rsi(vec3 r0, vec3 rd, float radius) {
 }
 
 vec3 computeAtmosphereColour(vec3 toLightVector, vec3 ray) {
+    ray.y += 0.1f;
     ray = glm::normalize(ray);
     const vec3 sun = normalize(toLightVector);
     const vec3 origin = vec3(0, 6372e3, 0);
-    const float intensity = 68.0f;
+    const float intensity = 48.0f;
     const float planetRadius = 6371e3;
     const float atmosphereRadius = 6471e3;
     const vec3 kR = vec3(5.5e-6, 13.0e-6, 22.4e-6);

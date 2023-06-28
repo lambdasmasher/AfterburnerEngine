@@ -43,7 +43,7 @@ Engine::Engine(int width, int height) :
         "res/shader/terrain.tese",
         nullptr,
         "res/shader/terrain.frag",
-        nullptr, {"position", "numTiles", "tileSize", "vpMatrix", "cameraPos", "tiling"}
+        nullptr, {"position", "numTiles", "tileSize", "vpMatrix", "clipPlane", "cameraPos", "tiling"}
     ),
     waterShader(
         "res/shader/terrain.vert",
@@ -51,7 +51,7 @@ Engine::Engine(int width, int height) :
         "res/shader/water.tese",
         nullptr,
         "res/shader/water.frag",
-        nullptr, {"position", "numTiles", "tileSize", "vpMatrix", "cameraPos", "tiling"}
+        nullptr, {"position", "numTiles", "tileSize", "vpMatrix", "cameraPos", "tiling", "nearPlane", "farPlane"}
     ),
     normalCompShader(
         nullptr, nullptr, nullptr, nullptr, nullptr, "res/shader/normals.comp",
@@ -63,15 +63,53 @@ Engine::Engine(int width, int height) :
     )
 {
     engine = this;
-    deferredFbo = new Fbo(width, height, {GL_RGBA32F, GL_RGBA32F, GL_RGBA32F}, true);
+    deferredFbo = new Fbo(width, height, {GL_RGBA8, GL_RGBA32F, GL_RGBA32F}, true);
+    reflectionFbo = new Fbo(width, height, {GL_RGBA8}, false);
+    refractionFbo = new Fbo(width, height, {GL_RGBA8}, true);
 }
 
 Engine::~Engine() {}
 
+void Engine::renderReflection(Scene *scene) {
+    float y = scene->camera->position.y;
+    float pitch = scene->camera->pitch;
+    scene->camera->position.y = scene->fftwater->position.y - scene->camera->position.y;
+    scene->camera->pitch = -scene->camera->pitch;
+    scene->camera->update();
+
+    deferredFbo->bind();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    clipPlane = glm::vec4(0.0f, 1.0f, 0.0f, -scene->fftwater->position.y + 1.0f);
+    renderTerrain(scene);
+    reflectionFbo->bind();
+    doDeferredShading(scene);
+    reflectionFbo->unbind();
+
+    scene->camera->position.y = y;
+    scene->camera->pitch = pitch;
+    scene->camera->update();
+}
+void Engine::renderRefraction(Scene *scene) {
+    deferredFbo->bind();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    clipPlane = glm::vec4(0.0f, -1.0f, 0.0f, -scene->fftwater->position.y + 2.0f);
+    renderTerrain(scene);
+    refractionFbo->bind();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    doDeferredShading(scene);
+    deferredFbo->blitDepth(refractionFbo);
+    refractionFbo->unbind();
+}
 void Engine::render(Scene *scene) {
     glEnable(GL_DEPTH_TEST);
     glClearColor(0, 0, 0, 0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glEnable(GL_CULL_FACE);
+
+    glEnable(GL_CLIP_DISTANCE0);
+    renderReflection(scene);
+    renderRefraction(scene);
+    glDisable(GL_CLIP_DISTANCE0);
 
     deferredFbo->bind();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -79,9 +117,7 @@ void Engine::render(Scene *scene) {
     renderTerrain(scene);
     renderWater(scene);
     deferredFbo->unbind();
-
     doDeferredShading(scene);
-
     updateDisplay();
 }
 
@@ -95,6 +131,8 @@ void Engine::updateDisplay() {
     if (w != width || h != height) {
         width = w; height = h;
         deferredFbo->resize(width, height);
+        reflectionFbo->resize(width, height);
+        refractionFbo->resize(width, height);
     }
     glViewport(0, 0, width, height);
     glfwSwapBuffers(window);
@@ -108,6 +146,7 @@ void Engine::renderTerrain(Scene *scene) {
     terrainShader.setInt("numTiles", terrain->numTiles);
     terrainShader.setFloat("tileSize", terrain->tileSize);
     terrainShader.setMat4("vpMatrix", scene->camera->vpMatrix);
+    terrainShader.setVec4("clipPlane", clipPlane);
     terrainShader.setVec3("cameraPos", scene->camera->position);
     terrainShader.setFloat("tiling", terrain->tiling);
     terrain->texture->bind(0);
@@ -121,7 +160,7 @@ void Engine::renderTerrain(Scene *scene) {
 
 void Engine::renderWater(Scene *scene) {
     FFTWater *water = scene->fftwater.get();
-    water->update(delta() * 4.0f);
+    water->update(delta() * 5.0f);
     waterShader.start();
     waterShader.setVec3("position", water->position);
     waterShader.setInt("numTiles", water->numTiles);
@@ -129,8 +168,13 @@ void Engine::renderWater(Scene *scene) {
     waterShader.setMat4("vpMatrix", scene->camera->vpMatrix);
     waterShader.setVec3("cameraPos", scene->camera->position);
     waterShader.setFloat("tiling", water->tiling);
+    waterShader.setFloat("nearPlane", scene->camera->nearPlane);
+    waterShader.setFloat("farPlane", scene->camera->farPlane);
     water->displacementMap->bind(0);
     water->normalMap->bind(1);
+    reflectionFbo->bindColourAttachment(0, 2);
+    refractionFbo->bindColourAttachment(0, 3);
+    refractionFbo->bindDepthAttachment(4);
     dummyVao->bind();
     glPatchParameteri(GL_PATCH_VERTICES, 4);
     glDrawArraysInstanced(GL_PATCHES, 0, 4, water->numTiles * water->numTiles);

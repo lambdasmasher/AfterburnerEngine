@@ -3,6 +3,7 @@
 layout(quads, fractional_even_spacing, ccw) in;
 
 uniform mat4 vpMatrix;
+uniform vec4 clipPlane;
 
 layout (location = 0) in vec2 inUv[];
 layout (location = 0) out vec2 outUv;
@@ -20,4 +21,5 @@ void main(void) {
     pos.y += (texture(heightmap, outUv).r - 0.5) * 2.0 * 100.0;
 
     gl_Position = vpMatrix * pos;
+    gl_ClipDistance[0] = dot(pos, clipPlane);
 }

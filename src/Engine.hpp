@@ -40,14 +40,17 @@ public:
 
 private:
     Vao * const dummyVao;
+    glm::vec4 clipPlane;
     void renderTerrain(Scene *scene);
     void renderWater(Scene *scene);
+    void renderReflection(Scene *scene);
+    void renderRefraction(Scene *scene);
 
 public:
     void computeNormalMap(Texture *heightmap, Texture *normalmap, float strength);
 
 private:
-    Fbo *deferredFbo;
+    Fbo *deferredFbo, *reflectionFbo, *refractionFbo;
     void doDeferredShading(Scene *scene);
 
 private:
