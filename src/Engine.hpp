@@ -39,6 +39,7 @@ public:
     inline bool isKeyDown(int key) { return glfwGetKey(window, key) == GLFW_PRESS; }
 
 private:
+    Texture *macroVariation;
     Vao * const dummyVao;
     glm::vec4 clipPlane;
     void renderTerrain(Scene *scene);

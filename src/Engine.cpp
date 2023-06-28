@@ -66,6 +66,8 @@ Engine::Engine(int width, int height) :
     deferredFbo = new Fbo(width, height, {GL_RGBA8, GL_RGBA32F, GL_RGBA32F}, true);
     reflectionFbo = new Fbo(width, height, {GL_RGBA8}, false);
     refractionFbo = new Fbo(width, height, {GL_RGBA8}, true);
+
+    macroVariation = Texture::loadFromImage("res/T_MacroVariation.png");
 }
 
 Engine::~Engine() {}
@@ -152,6 +154,7 @@ void Engine::renderTerrain(Scene *scene) {
     terrain->texture->bind(0);
     terrain->heightmap->bind(1);
     terrain->normalmap->bind(2);
+    macroVariation->bind(3);
     dummyVao->bind();
     glPatchParameteri(GL_PATCH_VERTICES, 4);
     glDrawArraysInstanced(GL_PATCHES, 0, 4, terrain->numTiles * terrain->numTiles);
