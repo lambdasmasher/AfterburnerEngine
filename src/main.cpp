@@ -16,6 +16,16 @@ int main(void) {
     scene.fftwater->tileSize = 25.f;
     scene.fftwater->tiling = 20.f;
 
+    // ocean
+    // scene.camera->position = glm::vec3(481.821045, 52.152992, 371.357758);
+    // scene.camera->pitch = -36.282;
+    // scene.camera->yaw = -119.2336;
+
+    // lake
+    // scene.camera->position = glm::vec3(165.735336, 11.286901, 135.532547);
+    // scene.camera->pitch = -17.967747;
+    // scene.camera->yaw = -485.757751;
+
     while (!engine.windowShouldClose()) {
         scene.camera->move();
         scene.camera->update();
