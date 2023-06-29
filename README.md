@@ -10,8 +10,8 @@
 ### Deferred rendering
 ![](/screenshots/deferred.png)
 
-## Tessellation-based Level of Detail optimization
+### Tessellation-based Level of Detail optimization
 ![](/screenshots/tessellation.png)
 
-## Atmospheric scattering
+### Atmospheric scattering
 ![](/screenshots/atmosphere.png)
