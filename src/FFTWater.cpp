@@ -11,7 +11,7 @@ FFTWater::FFTWater(int N, float A, float V, float L, glm::vec2 w, float normalSt
     : N(N), logN(int(std::log2(N))), A(A), V(V), L(L), normalStrength(normalStrength), w(w),
     h0kTexture(new Texture(GL_TEXTURE_2D, N, N)), hktY(Texture::texStorage(N, N)), hktX(Texture::texStorage(N, N)),
     hktZ(Texture::texStorage(N, N)), pong(Texture::texStorage(N, N)), butterflyTexture(new Texture(GL_TEXTURE_2D, logN, N)),
-    displacementMap(Texture::texStorage(N, N)), normalMap(Texture::texStorage(N, N)),
+    displacementMap(Texture::texStorage(N, N)), normalMap(Texture::dynamicMipmap(N)),
     hktShader(
         nullptr, nullptr, nullptr, nullptr, nullptr, "res/shader/hkt.comp",
         {"N", "L", "t"}
@@ -78,6 +78,7 @@ void FFTWater::update(float delta) {
     combineShader.stop();
 
     Engine::engine->computeNormalMap(displacementMap, normalMap, normalStrength);
+    glGenerateTextureMipmap(normalMap->texId);
 }
 
 void FFTWater::computeH0k() {

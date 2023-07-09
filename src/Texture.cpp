@@ -55,6 +55,15 @@ Texture* Texture::texStorage(int width, int height) {
     return texture;
 }
 
+Texture *Texture::dynamicMipmap(int N) {
+    Texture *texture = new Texture(GL_TEXTURE_2D, N, N);
+    texture->bind(0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, N, N, 0, GL_RGBA, GL_FLOAT, nullptr);
+    return texture;
+}
+
 extern glm::vec3 computeAtmosphereColour(glm::vec3 toLightVector, glm::vec3 ray);
 
 Texture* Texture::atmosphereCubemap(glm::vec3 toLightVector, int N) {
