@@ -10,7 +10,7 @@ int main(void) {
     scene.toLightVector = glm::vec3(0.f, 1.f, 0.5f);
     scene.atmosphereTexture = Texture::atmosphereCubemap(scene.toLightVector, 512);
 
-    scene.fftwater = std::make_unique<FFTWater>(512, 1.25f, 80.0f, 2000.0f, glm::vec2(1, 1), 1.7f);
+    scene.fftwater = std::make_unique<FFTWater>(512, 1.25f, 38.0f, 2000.0f, glm::vec2(1, 1), 1.7f);
     scene.fftwater->position = glm::vec3(-500.f, 0.f, -500.f);
     scene.fftwater->numTiles = 64;
     scene.fftwater->tileSize = 25.f;
