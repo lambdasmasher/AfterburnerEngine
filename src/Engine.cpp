@@ -209,6 +209,7 @@ void Engine::doDeferredShading(Scene *scene) {
     deferredFbo->bindColourAttachment(2, 2);
     deferredFbo->bindDepthAttachment(3);
     scene->atmosphereTexture->bind(4);
+    refractionFbo->bindColourAttachment(0, 5);
     dummyVao->bind();
     glDrawArrays(GL_TRIANGLES, 0, 6);
     deferredShader.stop();

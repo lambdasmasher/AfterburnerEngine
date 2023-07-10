@@ -7,6 +7,7 @@ layout (binding = 1) uniform sampler2D normalTexture;
 layout (binding = 2) uniform sampler2D materialTexture;
 layout (binding = 3) uniform sampler2D depthTexture;
 layout (binding = 4) uniform samplerCube atmosphereTexture;
+layout (binding = 5) uniform sampler2D refractionTexture;
 
 layout (location = 0) out vec4 outColour;
 
@@ -50,6 +51,7 @@ void main(void) {
     vec4 materialData = texture(materialTexture, uv);
     if (rawNormal.a > 0.5) {
         outColour = vec4(blinnPhong(colour, normal, position, materialData), 1.0);
+        outColour = mix(outColour, texture(refractionTexture, uv), materialData.z);
     } else {
         outColour = texture(atmosphereTexture, position - cameraPos);
     }

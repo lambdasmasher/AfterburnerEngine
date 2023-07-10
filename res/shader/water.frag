@@ -50,6 +50,7 @@ void main(void) {
     vec3 refraction = texture(refractionMap, refractionCoord).xyz;
     float depth = linearizeDepth(texture(depthTexture, projCoord).r) - linearizeDepth(gl_FragCoord.z);
     refraction = mix(refraction, waterColour, clamp(smoothstep(0.0, 10.0, depth), 0.5, 1.0));
+    material.z = 1.0 - clamp(depth / 2.0, 0.0, 1.0);
 
     colour = vec4(mix(reflection, refraction, fresnel), 1.0);
 }
