@@ -29,7 +29,7 @@ private:
     GLFWwindow *window;
     int width, height;
     double oldTime = 0.0;
-    float deltaTime;
+    float deltaTime = 0.0f;
     void updateDisplay();
 public:
     inline int getDisplayWidth() { return width; }
