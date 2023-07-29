@@ -11,9 +11,12 @@ public:
         glGenVertexArrays(1, &id);
         return id;
     }()) {};
-    ~Vao() { glDeleteVertexArrays(1, &vaoId); };
+    ~Vao();
     const GLuint vaoId;
     inline void bind() { glBindVertexArray(vaoId); }
+private:
+    void addVbo(const std::vector<float> &data, int group);
+    std::vector<GLuint> vboIds;
 };
 
 #endif /* VAO */
