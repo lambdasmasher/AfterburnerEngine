@@ -11,6 +11,7 @@ public:
     Texture(GLenum texType, int width, int height) : texId([](){
         GLuint id; glGenTextures(1, &id); return id;
     }()), texType(texType), width(width), height(height) {}
+    static Texture* solidColour(float r, float g, float b, float a);
     static Texture* loadFromImage(const char *path);
     static Texture* loadHeightmap(const char *path);
     static Texture* texStorage(int width, int height);

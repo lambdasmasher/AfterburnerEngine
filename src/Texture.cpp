@@ -4,6 +4,16 @@
 #include <stb_image.h>
 #include <functional>
 
+Texture* Texture::solidColour(float r, float g, float b, float a) {
+    Texture *texture = new Texture(GL_TEXTURE_2D, 1, 1);
+    texture->bind(0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    float data[4] = {r, g, b, a};
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, 1, 1, 0, GL_RGBA, GL_FLOAT, data);
+    return texture;
+}
+
 Texture* Texture::loadFromImage(const char *path) {
     int width, height, channels;
     stbi_set_flip_vertically_on_load(true);
