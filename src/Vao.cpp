@@ -17,7 +17,7 @@ struct Vertex {
     glm::vec2 texcoord;
     glm::vec3 normal;
     bool operator<(const Vertex &that) const {
-        return memcmp(this, &that, sizeof(this)) < 0;
+        return memcmp(this, &that, sizeof(Vertex)) < 0;
     }
 };
 Vao* Vao::fromObj(const char *file) {
@@ -42,7 +42,7 @@ Vao* Vao::fromObj(const char *file) {
                 v.normal[i] = attrib.normals[3 * index.normal_index + i];
             }
             v.texcoord.x = attrib.texcoords[2 * index.texcoord_index + 0];
-            v.texcoord.y = 1.0f - attrib.texcoords[2 * index.texcoord_index + 1];
+            v.texcoord.y = attrib.texcoords[2 * index.texcoord_index + 1];
 
             if (!vertices.count(v)) {
                 vertices[v] = vertices.size();

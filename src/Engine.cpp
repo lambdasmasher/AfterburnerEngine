@@ -123,6 +123,7 @@ void Engine::render(Scene *scene) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     if (isKeyDown(GLFW_KEY_F3)) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     renderTerrain(scene);
+    renderForest(scene);
     renderWater(scene);
     deferredFbo->unbind();
     doDeferredShading(scene);
@@ -193,9 +194,10 @@ void Engine::renderWater(Scene *scene) {
 void Engine::renderForest(Scene *scene) {
     entityShader.start();
     entityShader.setMat4("vpMatrix", scene->camera->vpMatrix);
-    scene->forest->treeModel.bind();
-    unsigned vertexCount = scene->forest->treeModel.mesh->getVertexCount();
-    for (const Entity &tree : scene->forest->trees) {
+    scene->forest->treeModel->bind();
+    unsigned vertexCount = scene->forest->treeModel->mesh->getVertexCount();
+    for (Entity &tree : scene->forest->trees) {
+        tree.computeMatrix();
         entityShader.setMat4("modelMatrix", tree.matrix);
         glDrawElements(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, NULL);
     }

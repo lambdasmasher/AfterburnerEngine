@@ -7,6 +7,7 @@
 
 #include "Texture.hpp"
 #include "FFTWater.hpp"
+#include "Vao.hpp"
 
 class Camera {
 public:
@@ -43,6 +44,8 @@ struct Model {
 };
 
 struct Entity {
+    Entity(const glm::vec3 &pos, const glm::vec3 &rot, const glm::vec3 &scl)
+        : position(pos), rotation(rot), scale(scl) {}
     glm::vec3 position, rotation, scale;
     glm::mat4 matrix;
     void computeMatrix();
@@ -50,7 +53,7 @@ struct Entity {
 
 struct Forest {
     std::vector<Entity> trees;
-    Model treeModel;
+    std::unique_ptr<Model> treeModel;
 };
 
 class Scene {
