@@ -31,6 +31,17 @@ public:
     Texture *texture, *heightmap, *normalmap;
 };
 
+struct Model {
+    Model(Vao *mesh, Texture *texture)
+        : mesh(mesh), texture(texture) {}
+    Vao * const mesh;
+    Texture * const texture;
+    inline void bind(unsigned i = 0) {
+        mesh->bindWithIndices();
+        texture->bind(i);
+    }
+};
+
 struct Entity {
     glm::vec3 position, rotation, scale;
     glm::mat4 matrix;
@@ -39,6 +50,7 @@ struct Entity {
 
 struct Forest {
     std::vector<Entity> trees;
+    Model treeModel;
 };
 
 class Scene {

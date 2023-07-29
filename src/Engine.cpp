@@ -53,6 +53,12 @@ Engine::Engine(int width, int height) :
         "res/shader/water.frag",
         nullptr, {"position", "numTiles", "tileSize", "vpMatrix", "cameraPos", "tiling", "nearPlane", "farPlane"}
     ),
+    entityShader(
+        "res/shader/entity.vert",
+        nullptr, nullptr, nullptr,
+        "res/shader/entity.frag", nullptr,
+        {"modelMatrix", "vpMatrix"}
+    ),
     normalCompShader(
         nullptr, nullptr, nullptr, nullptr, nullptr, "res/shader/normals.comp",
         {"N", "strength"}
@@ -182,6 +188,18 @@ void Engine::renderWater(Scene *scene) {
     glPatchParameteri(GL_PATCH_VERTICES, 4);
     glDrawArraysInstanced(GL_PATCHES, 0, 4, water->numTiles * water->numTiles);
     waterShader.stop();
+}
+
+void Engine::renderForest(Scene *scene) {
+    entityShader.start();
+    entityShader.setMat4("vpMatrix", scene->camera->vpMatrix);
+    scene->forest->treeModel.bind();
+    unsigned vertexCount = scene->forest->treeModel.mesh->getVertexCount();
+    for (const Entity &tree : scene->forest->trees) {
+        entityShader.setMat4("modelMatrix", tree.matrix);
+        glDrawElements(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, NULL);
+    }
+    entityShader.stop();
 }
 
 void Engine::computeNormalMap(Texture *heightmap, Texture *normalmap, float strength) {

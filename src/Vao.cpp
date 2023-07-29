@@ -19,6 +19,7 @@ void Vao::addVbo(const std::vector<float> &data, int group) {
 }
 
 void Vao::setIndexBuffer(const std::vector<unsigned> &indices) {
+    vertexCount = indices.size();
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferId);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned), indices.data(), GL_STATIC_DRAW);
 }
