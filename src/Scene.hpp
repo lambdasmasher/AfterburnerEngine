@@ -31,11 +31,22 @@ public:
     Texture *texture, *heightmap, *normalmap;
 };
 
+struct Entity {
+    glm::vec3 position, rotation, scale;
+    glm::mat4 matrix;
+    void computeMatrix();
+};
+
+struct Forest {
+    std::vector<Entity> trees;
+};
+
 class Scene {
 public:
     std::unique_ptr<Camera> camera;
     std::unique_ptr<Terrain> terrain;
     std::unique_ptr<FFTWater> fftwater;
+    std::unique_ptr<Forest> forest;
     glm::vec3 toLightVector;
     Texture *atmosphereTexture;
 };
