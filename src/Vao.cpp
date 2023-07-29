@@ -3,6 +3,7 @@
 Vao::~Vao() {
     glDeleteVertexArrays(1, &vaoId);
     glDeleteBuffers(vboIds.size(), vboIds.data());
+    glDeleteBuffers(1, &indexBufferId);
 }
 
 void Vao::addVbo(const std::vector<float> &data, int group) {
@@ -15,4 +16,9 @@ void Vao::addVbo(const std::vector<float> &data, int group) {
     glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), data.data(), GL_STATIC_DRAW);
     glVertexAttribPointer(idx, group, GL_FLOAT, GL_FALSE, group * sizeof(float), NULL);
     glEnableVertexAttribArray(idx);
+}
+
+void Vao::setIndexBuffer(const std::vector<unsigned> &indices) {
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferId);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned), indices.data(), GL_STATIC_DRAW);
 }
