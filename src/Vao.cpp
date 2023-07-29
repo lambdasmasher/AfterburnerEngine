@@ -1,9 +1,68 @@
 #include "Vao.hpp"
 
+#include <map>
+#include <glm/glm.hpp>
+
+#define TINYOBJLOADER_IMPLEMENTATION
+#include <tiny_obj_loader.h>
+
 Vao::~Vao() {
     glDeleteVertexArrays(1, &vaoId);
     glDeleteBuffers(vboIds.size(), vboIds.data());
     glDeleteBuffers(1, &indexBufferId);
+}
+
+struct Vertex {
+    glm::vec3 position;
+    glm::vec2 texcoord;
+    glm::vec3 normal;
+    bool operator<(const Vertex &that) const {
+        return memcmp(this, &that, sizeof(this)) < 0;
+    }
+};
+Vao* Vao::fromObj(const char *file) {
+    tinyobj::attrib_t attrib;
+    std::vector<tinyobj::shape_t> shapes;
+    std::vector<tinyobj::material_t> materials;
+    std::string err;
+    if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &err, file)) {
+        printf("failed to load obj file '%s'\n", file);
+        puts(err.c_str());
+        exit(0);
+    }
+
+    std::map<Vertex, unsigned> vertices; 
+    std::vector<unsigned> indices;
+    std::vector<float> positions, texcoords, normals;
+    for (const auto &shape : shapes) {
+        for (const auto &index : shape.mesh.indices) {
+            Vertex v;
+            for (unsigned i = 0; i < 3; i++) {
+                v.position[i] = attrib.vertices[3 * index.vertex_index + i];
+                v.normal[i] = attrib.normals[3 * index.normal_index + i];
+            }
+            v.texcoord.x = attrib.texcoords[2 * index.texcoord_index + 0];
+            v.texcoord.y = 1.0f - attrib.texcoords[2 * index.texcoord_index + 1];
+
+            if (!vertices.count(v)) {
+                vertices[v] = vertices.size();
+                for (unsigned i = 0; i < 3; i++) {
+                    positions.push_back(v.position[i]);
+                    if (i < 2)
+                        texcoords.push_back(v.texcoord[i]);
+                    normals.push_back(v.normal[i]);
+                }
+            }
+            indices.push_back(vertices[v]);
+        }
+    }
+
+    Vao *vao = new Vao();
+    vao->setIndexBuffer(indices);
+    vao->addVbo(positions, 3);
+    vao->addVbo(texcoords, 2);
+    vao->addVbo(normals, 3);
+    return vao;
 }
 
 void Vao::addVbo(const std::vector<float> &data, int group) {
