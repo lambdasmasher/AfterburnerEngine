@@ -12,6 +12,11 @@ Vao::~Vao() {
     glDeleteBuffers(1, &indexBufferId);
 }
 
+Vao *Vao::attachInstancedArray(InstancedArray *array) {
+    array->setupAttributes(this, vboIds.size());
+    return this;
+}
+
 struct Vertex {
     glm::vec3 position;
     glm::vec2 texcoord;

@@ -3,6 +3,7 @@
 
 #include <GL/glew.h>
 #include "GLResource.hpp"
+#include "InstancedArray.hpp"
 
 class Vao : public GLResource {
 public:
@@ -17,6 +18,7 @@ public:
     inline void bindWithIndices() { bind(); glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferId); }
     inline unsigned getVertexCount() { return vertexCount; }
 
+    Vao* attachInstancedArray(InstancedArray *array);
     static Vao* fromObj(const char *file);
 private:
     void addVbo(const std::vector<float> &data, int group);
