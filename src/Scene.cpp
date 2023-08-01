@@ -64,3 +64,19 @@ void Entity::computeMatrix() {
     matrix = glm::rotate(matrix, glm::radians(rotation.z), glm::vec3(0.f, 0.f, 1.f));
     matrix = glm::scale(matrix, scale);
 }
+
+#include <random>
+Forest::Forest() {
+    treeArray = new InstancedArray(1000);
+    treeMesh = Vao::fromObj("res/suzanne.obj")->attachInstancedArray(treeArray);
+    treeTexture = Texture::solidColour(0.5f, 0.5f, 0.5f, 1.0f);
+
+    std::mt19937 rng(0x42);
+    std::uniform_real_distribution<float> d(-50.0f, 50.0f);
+    for (int i = 0; i < 100; i++) {
+        trees.emplace_back(glm::vec3(d(rng), d(rng)+50, d(rng)), glm::vec3(d(rng), d(rng), d(rng)), glm::vec3(10.f));
+        trees.back().computeMatrix();
+        treeArray->add(&trees.back());
+    }
+    treeArray->flush();
+}

@@ -2,7 +2,9 @@
 #define INSTANCEDARRAY
 
 #include "GLResource.hpp"
-#include "Scene.hpp"
+#include "Vao.hpp"
+
+class Entity;
 
 class InstancedArray : public GLResource {
 public:

@@ -3,7 +3,8 @@
 
 #include <GL/glew.h>
 #include "GLResource.hpp"
-#include "InstancedArray.hpp"
+
+class InstancedArray;
 
 class Vao : public GLResource {
 public:

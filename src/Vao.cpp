@@ -6,6 +6,8 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tiny_obj_loader.h>
 
+#include "InstancedArray.hpp"
+
 Vao::~Vao() {
     glDeleteVertexArrays(1, &vaoId);
     glDeleteBuffers(vboIds.size(), vboIds.data());

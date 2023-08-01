@@ -1,5 +1,7 @@
 #include "InstancedArray.hpp"
 
+#include "Scene.hpp"
+
 #define FLOATS_PER_INSTANCE 16
 #define BYTES_PER_INSTANCE (sizeof(float) * FLOATS_PER_INSTANCE)
 
@@ -14,7 +16,8 @@ void InstancedArray::setupAttributes(Vao *vao, unsigned start) {
     glBindBuffer(GL_ARRAY_BUFFER, vboId);
     unsigned idx = start, offset = 0;
     for (unsigned size : attribs) {
-        glVertexAttribPointer(idx, size, GL_FLOAT, false, BYTES_PER_INSTANCE, (void*)offset);
+        glEnableVertexAttribArray(idx);
+        glVertexAttribPointer(idx, size, GL_FLOAT, false, BYTES_PER_INSTANCE, (void*)(sizeof(float) * offset));
         glVertexAttribDivisor(idx, 1);
         idx++;
         offset += size;

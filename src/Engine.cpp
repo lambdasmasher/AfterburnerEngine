@@ -57,7 +57,7 @@ Engine::Engine(int width, int height) :
         "res/shader/entity.vert",
         nullptr, nullptr, nullptr,
         "res/shader/entity.frag", nullptr,
-        {"modelMatrix", "vpMatrix"}
+        {"vpMatrix"}
     ),
     normalCompShader(
         nullptr, nullptr, nullptr, nullptr, nullptr, "res/shader/normals.comp",
@@ -89,6 +89,7 @@ void Engine::renderReflection(Scene *scene) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     clipPlane = glm::vec4(0.0f, 1.0f, 0.0f, -scene->fftwater->position.y + 1.0f);
     renderTerrain(scene);
+    renderForest(scene);
     reflectionFbo->bind();
     doDeferredShading(scene);
     reflectionFbo->unbind();
@@ -194,13 +195,10 @@ void Engine::renderWater(Scene *scene) {
 void Engine::renderForest(Scene *scene) {
     entityShader.start();
     entityShader.setMat4("vpMatrix", scene->camera->vpMatrix);
-    scene->forest->treeModel->bind();
-    unsigned vertexCount = scene->forest->treeModel->mesh->getVertexCount();
-    for (Entity &tree : scene->forest->trees) {
-        tree.computeMatrix();
-        entityShader.setMat4("modelMatrix", tree.matrix);
-        glDrawElements(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, NULL);
-    }
+    scene->forest->treeMesh->bindWithIndices();
+    scene->forest->treeTexture->bind(0);
+    unsigned vertexCount = scene->forest->treeMesh->getVertexCount();
+    glDrawElementsInstanced(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, NULL, scene->forest->trees.size());
     entityShader.stop();
 }
 

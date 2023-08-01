@@ -17,8 +17,6 @@ int main(void) {
     scene.fftwater->tiling = 20.f;
 
     scene.forest = std::make_unique<Forest>();
-    scene.forest->treeModel = std::make_unique<Model>(Vao::fromObj("res/viking_room.obj"), Texture::loadFromImage("res/viking_room.png"));
-    scene.forest->trees.push_back(Entity(glm::vec3(0.f, 50.f, 0.f), glm::vec3(-90.f, 0.f, 0.f), glm::vec3(20.f)));
 
     // ocean
     // scene.camera->position = glm::vec3(481.821045, 52.152992, 371.357758);

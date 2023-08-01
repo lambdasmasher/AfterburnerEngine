@@ -8,6 +8,7 @@
 #include "Texture.hpp"
 #include "FFTWater.hpp"
 #include "Vao.hpp"
+#include "InstancedArray.hpp"
 
 class Camera {
 public:
@@ -32,17 +33,6 @@ public:
     Texture *texture, *heightmap, *normalmap;
 };
 
-struct Model {
-    Model(Vao *mesh, Texture *texture)
-        : mesh(mesh), texture(texture) {}
-    Vao * const mesh;
-    Texture * const texture;
-    inline void bind(unsigned i = 0) {
-        mesh->bindWithIndices();
-        texture->bind(i);
-    }
-};
-
 struct Entity {
     Entity(const glm::vec3 &pos, const glm::vec3 &rot, const glm::vec3 &scl)
         : position(pos), rotation(rot), scale(scl) {}
@@ -51,9 +41,14 @@ struct Entity {
     void computeMatrix();
 };
 
-struct Forest {
+class Forest {
+public:
+    Forest();
+    Vao *treeMesh;
+    Texture *treeTexture;
     std::vector<Entity> trees;
-    std::unique_ptr<Model> treeModel;
+private:
+    InstancedArray *treeArray;
 };
 
 class Scene {
