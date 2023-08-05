@@ -53,12 +53,13 @@ struct Entity {
 };
 
 class Forest {
+    friend class Engine;
 public:
     Forest();
     std::unique_ptr<Model[]> trunkModels, leafModels;
-    std::unordered_map<Model*, std::vector<Entity*>> map;
 private:
     InstancedArray *treeArray;
+    std::unordered_map<Model*, std::vector<Entity*>> map;
 };
 
 class Scene {
