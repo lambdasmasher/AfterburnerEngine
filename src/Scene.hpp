@@ -25,12 +25,17 @@ public:
 class Terrain {
 public:
     Terrain(const glm::vec3 &position, int numTiles, float tileSize, float tiling,
-                Texture *texture, Texture *heightmap, float normalStrength);
+                Texture *texture, const char *heightpath, float amplitude, float normalStrength);
     const glm::vec3 position;
     const int numTiles;
     const float tileSize;
     float tiling;
+    float amplitude;
     Texture *texture, *heightmap, *normalmap;
+    float getHeight(float x, float z);
+private:
+    float sampleHeight(unsigned i);
+    std::vector<uint16_t> heights;
 };
 
 struct Entity {

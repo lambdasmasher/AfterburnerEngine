@@ -43,7 +43,7 @@ Engine::Engine(int width, int height) :
         "res/shader/terrain.tese",
         nullptr,
         "res/shader/terrain.frag",
-        nullptr, {"position", "numTiles", "tileSize", "vpMatrix", "clipPlane", "cameraPos", "tiling"}
+        nullptr, {"position", "numTiles", "tileSize", "vpMatrix", "clipPlane", "cameraPos", "tiling", "amplitude"}
     ),
     waterShader(
         "res/shader/terrain.vert",
@@ -159,6 +159,7 @@ void Engine::renderTerrain(Scene *scene) {
     terrainShader.setVec4("clipPlane", clipPlane);
     terrainShader.setVec3("cameraPos", scene->camera->position);
     terrainShader.setFloat("tiling", terrain->tiling);
+    terrainShader.setFloat("amplitude", terrain->amplitude);
     terrain->texture->bind(0);
     terrain->heightmap->bind(1);
     terrain->normalmap->bind(2);

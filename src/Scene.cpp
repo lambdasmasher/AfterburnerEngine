@@ -48,12 +48,34 @@ void Camera::update() {
 }
 
 Terrain::Terrain(const glm::vec3 &position, int numTiles, float tileSize, float tiling,
-                Texture *texture, Texture *heightmap, float normalStrength) 
+                Texture *texture, const char *heightpath, float amplitude, float normalStrength)
         : position(position), numTiles(numTiles), tileSize(tileSize), tiling(tiling),
-                texture(texture), heightmap(heightmap)
+          amplitude(amplitude), texture(texture)
 {
+    heightmap = Texture::loadHeightmap(heightpath, heights);
     normalmap = Texture::texStorage(heightmap->width, heightmap->height);
     Engine::engine->computeNormalMap(heightmap, normalmap, normalStrength);
+}
+
+static float lerp(float a, float b, float t) {
+    return a + t * (b - a);
+}
+float Terrain::sampleHeight(unsigned i) {
+    if (i < 0 || i >= heights.size())
+        return 0.f;
+    return (heights[i] / 65535.0f - 0.5f) * 2.0f * amplitude;
+}
+float Terrain::getHeight(float x, float z) {
+    int N = heightmap->width;
+    float u = (x - position.x) / (tileSize * numTiles) * N;
+    float v = (z - position.z) / (tileSize * numTiles) * N;
+    float a = sampleHeight(int(floor(u)) + N*int(floor(v)));
+    float b = sampleHeight(int(floor(u)) + N*int(ceil(v)));
+    float c = sampleHeight(int(ceil(u)) + N*int(floor(v)));
+    float d = sampleHeight(int(ceil(u)) + N*int(ceil(v)));
+    float f1 = lerp(a, b, modff(v, &x));
+    float f2 = lerp(c, d, modff(v, &x));
+    return lerp(f1, f2, modff(u, &x));
 }
 
 void Entity::computeMatrix() {

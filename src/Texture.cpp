@@ -36,7 +36,7 @@ Texture* Texture::loadFromImage(const char *path) {
     return texture;
 }
 
-Texture* Texture::loadHeightmap(const char *path) {
+Texture* Texture::loadHeightmap(const char *path, std::vector<uint16_t> &heights) {
     int width, height, channels;
     stbi_set_flip_vertically_on_load(true);
     unsigned short *data = stbi_load_16(path, &width, &height, &channels, 1);
@@ -52,6 +52,7 @@ Texture* Texture::loadHeightmap(const char *path) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_R16, width, height, 0, GL_RED, GL_UNSIGNED_SHORT, data);
 
+    heights.assign(data, data + (width * height));
     stbi_image_free(data);
     return texture;
 }
