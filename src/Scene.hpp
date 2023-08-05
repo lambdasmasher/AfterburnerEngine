@@ -55,8 +55,7 @@ struct Entity {
 class Forest {
 public:
     Forest();
-    Vao *treeMesh;
-    Texture *treeTexture;
+    std::unique_ptr<Model[]> trunkModels, leafModels;
     std::vector<Entity> trees;
 private:
     InstancedArray *treeArray;
