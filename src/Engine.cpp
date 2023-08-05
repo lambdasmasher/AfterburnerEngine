@@ -196,10 +196,15 @@ void Engine::renderWater(Scene *scene) {
 void Engine::renderForest(Scene *scene) {
     entityShader.start();
     entityShader.setMat4("vpMatrix", scene->camera->vpMatrix);
-    scene->forest->treeMesh->bindWithIndices();
-    scene->forest->treeTexture->bind(0);
-    unsigned vertexCount = scene->forest->treeMesh->getVertexCount();
-    glDrawElementsInstanced(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, NULL, scene->forest->trees.size());
+    for (const auto &p : scene->forest->map) {
+        p.first->mesh->bindWithIndices();
+        p.first->texture->bind(0);
+        for (Entity *entity : p.second)
+            scene->forest->treeArray->add(entity);
+        scene->forest->treeArray->flush();
+        unsigned vertexCount = p.first->mesh->getVertexCount();
+        glDrawElementsInstanced(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, NULL, p.second.size());
+    }
     entityShader.stop();
 }
 
