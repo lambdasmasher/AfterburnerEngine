@@ -38,6 +38,12 @@ private:
     std::vector<uint16_t> heights;
 };
 
+struct Model {
+    Model(Vao *mesh, Texture *texture)
+        : mesh(mesh), texture(texture) {}
+    Vao * const mesh;
+    Texture * const texture;
+};
 struct Entity {
     Entity(const glm::vec3 &pos, const glm::vec3 &rot, const glm::vec3 &scl)
         : position(pos), rotation(rot), scale(scl) {}
