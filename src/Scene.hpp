@@ -56,7 +56,7 @@ class Forest {
     friend class Engine;
 public:
     Forest();
-    std::unique_ptr<Model[]> trunkModels, leafModels;
+    std::unique_ptr<Model> trunkModels[3], leafModels[3];
 private:
     InstancedArray *treeArray;
     std::unordered_map<Model*, std::vector<Entity*>> map;
