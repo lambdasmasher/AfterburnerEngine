@@ -55,7 +55,7 @@ struct Entity {
 class Forest {
     friend class Engine;
 public:
-    Forest();
+    Forest(Terrain *terrain);
     std::unique_ptr<Model> trunkModels[3], leafModels[3];
 private:
     InstancedArray *treeArray;

@@ -194,6 +194,7 @@ void Engine::renderWater(Scene *scene) {
 }
 
 void Engine::renderForest(Scene *scene) {
+    glDisable(GL_CULL_FACE);
     entityShader.start();
     entityShader.setMat4("vpMatrix", scene->camera->vpMatrix);
     for (const auto &p : scene->forest->map) {
@@ -206,6 +207,7 @@ void Engine::renderForest(Scene *scene) {
         glDrawElementsInstanced(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, NULL, p.second.size());
     }
     entityShader.stop();
+    glEnable(GL_CULL_FACE);
 }
 
 void Engine::computeNormalMap(Texture *heightmap, Texture *normalmap, float strength) {

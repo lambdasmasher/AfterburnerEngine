@@ -88,17 +88,21 @@ void Entity::computeMatrix() {
 }
 
 #include <random>
-Forest::Forest() {
+Forest::Forest(Terrain *terrain) {
     treeArray = new InstancedArray(1000);
-    treeMesh = Vao::fromObj("res/suzanne.obj")->attachInstancedArray(treeArray);
-    treeTexture = Texture::solidColour(0.5f, 0.5f, 0.5f, 1.0f);
+    trunkModels[0] = std::make_unique<Model>(Vao::fromObj("res/tree.obj")->attachInstancedArray(treeArray), Texture::loadFromImage("res/tree.png"));
 
-    std::mt19937 rng(0x42);
-    std::uniform_real_distribution<float> d(-50.0f, 50.0f);
-    for (int i = 0; i < 100; i++) {
-        trees.emplace_back(glm::vec3(d(rng), d(rng)+50, d(rng)), glm::vec3(d(rng), d(rng), d(rng)), glm::vec3(10.f));
-        trees.back().computeMatrix();
-        treeArray->add(&trees.back());
+    std::mt19937 rng(42);
+    std::uniform_real_distribution<float> pos(-200.f, 200.f);
+    std::uniform_real_distribution<float> rot(0.f, 360.f);
+    for (int i = 0; i < 1; i++) {
+        glm::vec3 position(pos(rng), 0.f, pos(rng));
+        position.y = terrain->getHeight(position.x, position.z);
+        map[trunkModels[0].get()].push_back(new Entity(
+            position,
+            glm::vec3(0.f, rot(rng), 0.f),
+            glm::vec3(1.f)
+        ));
+        map[trunkModels[0].get()].back()->computeMatrix();
     }
-    treeArray->flush();
 }
