@@ -12,8 +12,10 @@ public:
         glActiveTexture(GL_TEXTURE0 + i);
         glBindTexture(GL_TEXTURE_2D_ARRAY, texArrayId);
     }
+    void update(Scene *scene);
 private:
     const int cascades;
+    std::vector<glm::mat4> lightVpMats;
     GLuint fboId;
     GLuint texArrayId;
 };
