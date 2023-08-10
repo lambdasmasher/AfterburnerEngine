@@ -34,6 +34,8 @@ public:
         { glUniform4f(locations[name], v.x, v.y, v.z, v.w); }
     inline void setMat4(const char *name, const glm::mat4 &m)
         { glUniformMatrix4fv(locations[name], 1, GL_FALSE, glm::value_ptr(m)); }
+    inline void setMat4Array(const char *name, float *val, int cnt)
+        { glUniformMatrix4fv(locations[name], cnt, GL_FALSE, val); }
     inline void setInt(const char *name, int i)
         { glUniform1i(locations[name], i); }
     
