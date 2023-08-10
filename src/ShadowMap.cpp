@@ -28,6 +28,16 @@ ShadowMap::~ShadowMap() {
     glDeleteFramebuffers(1, &fboId);
 }
 
+void ShadowMap::bindFbo() {
+    glBindFramebuffer(GL_FRAMEBUFFER, fboId);
+    glDrawBuffer(GL_NONE);
+    glViewport(0, 0, DEPTH_MAP_RESOLUTION, DEPTH_MAP_RESOLUTION);
+}
+void ShadowMap::unbindFbo() {
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glViewport(0, 0, Engine::engine->getDisplayWidth(), Engine::engine->getDisplayHeight());
+}
+
 void ShadowMap::update(Scene *scene) {
     std::pair<float, float> subfrusta[3] = {
         {1.0f, 100.f}, {100.f, 1000.f}, {1000.f, 5000.f}

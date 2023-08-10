@@ -11,14 +11,16 @@ class ShadowMap {
 public:
     ShadowMap(int cascades);
     ~ShadowMap();
-    inline void bindFbo() { glBindFramebuffer(GL_FRAMEBUFFER, fboId); }
+    void bindFbo();
+    void unbindFbo();
     inline void bindMapTexture(unsigned i) {
         glActiveTexture(GL_TEXTURE0 + i);
         glBindTexture(GL_TEXTURE_2D_ARRAY, texArrayId);
     }
     void update(Scene *scene);
-private:
+    inline float* getMatrixValPtr() { return (float*)lightVpMats.data(); }
     const int cascades;
+private:
     std::vector<glm::mat4> lightVpMats;
     GLuint fboId;
     GLuint texArrayId;
