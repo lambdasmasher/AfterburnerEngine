@@ -90,18 +90,17 @@ void Entity::computeMatrix() {
 #include <random>
 Forest::Forest(Terrain *terrain) {
     treeArray = new InstancedArray(1000);
-    trunkModels[0] = std::make_unique<Model>(Vao::fromObj("res/tree.obj")->attachInstancedArray(treeArray), Texture::loadFromImage("res/tree.png"));
+    trunkModels[0] = std::make_unique<Model>(Vao::fromObj("res/suzanne.obj")->attachInstancedArray(treeArray), Texture::solidColour(0.5f, 0.5f, 0.5, 1.0));
 
     std::mt19937 rng(42);
-    std::uniform_real_distribution<float> pos(-200.f, 200.f);
+    std::uniform_real_distribution<float> pos(-100.f, 100.f);
     std::uniform_real_distribution<float> rot(0.f, 360.f);
-    for (int i = 0; i < 1; i++) {
-        glm::vec3 position(pos(rng), 0.f, pos(rng));
-        position.y = terrain->getHeight(position.x, position.z);
+    for (int i = 0; i < 100; i++) {
+        glm::vec3 position(pos(rng), glm::abs(pos(rng)) + 10.f, pos(rng));
         map[trunkModels[0].get()].push_back(new Entity(
             position,
             glm::vec3(0.f, rot(rng), 0.f),
-            glm::vec3(1.f)
+            glm::vec3(5.f)
         ));
         map[trunkModels[0].get()].back()->computeMatrix();
     }

@@ -8,6 +8,7 @@ layout (binding = 2) uniform sampler2D materialTexture;
 layout (binding = 3) uniform sampler2D depthTexture;
 layout (binding = 4) uniform samplerCube atmosphereTexture;
 layout (binding = 5) uniform sampler2D refractionTexture;
+layout (binding = 6) uniform sampler2DArray shadowMap;
 
 layout (location = 0) out vec4 outColour;
 
@@ -55,4 +56,5 @@ void main(void) {
     } else {
         outColour = texture(atmosphereTexture, position - cameraPos);
     }
+    outColour = texture(shadowMap, vec3(uv, 0));
 }

@@ -113,11 +113,24 @@ void Engine::renderRefraction(Scene *scene) {
     deferredFbo->blitDepth(refractionFbo);
     refractionFbo->unbind();
 }
+void Engine::renderShadowMap(Scene *scene) {
+    scene->shadowMap->update(scene);
+    scene->shadowMap->bindFbo();
+    glClear(GL_DEPTH_BUFFER_BIT);
+    shadowShader.start();
+    shadowShader.setMat4Array("vpMatrices",
+        scene->shadowMap->getMatrixValPtr(), scene->shadowMap->cascades);
+    renderForestHelper(scene);
+    shadowShader.stop();
+    scene->shadowMap->unbindFbo();
+}
 void Engine::render(Scene *scene) {
     glEnable(GL_DEPTH_TEST);
     glClearColor(0, 0, 0, 0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_CULL_FACE);
+
+    renderShadowMap(scene);
 
     glEnable(GL_CLIP_DISTANCE0);
     renderReflection(scene);
@@ -243,6 +256,7 @@ void Engine::doDeferredShading(Scene *scene) {
     deferredFbo->bindDepthAttachment(3);
     scene->atmosphereTexture->bind(4);
     refractionFbo->bindColourAttachment(0, 5);
+    scene->shadowMap->bindMapTexture(6);
     dummyVao->bind();
     glDrawArrays(GL_TRIANGLES, 0, 6);
     deferredShader.stop();

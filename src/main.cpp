@@ -17,6 +17,7 @@ int main(void) {
     scene.fftwater->tiling = 20.f;
 
     scene.forest = std::make_unique<Forest>(scene.terrain.get());
+    scene.shadowMap = std::make_unique<ShadowMap>(3);
 
     // ocean
     // scene.camera->position = glm::vec3(481.821045, 52.152992, 371.357758);

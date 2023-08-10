@@ -48,6 +48,7 @@ private:
     void renderForest(Scene *scene);
     void renderReflection(Scene *scene);
     void renderRefraction(Scene *scene);
+    void renderShadowMap(Scene *scene);
 
 public:
     void computeNormalMap(Texture *heightmap, Texture *normalmap, float strength);
