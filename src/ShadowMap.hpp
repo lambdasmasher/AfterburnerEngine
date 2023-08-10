@@ -1,7 +1,11 @@
 #ifndef SHADOWMAP
 #define SHADOWMAP
 
-#include "Scene.hpp"
+#include <GL/glew.h>
+#include <glm/glm.hpp>
+#include <vector>
+
+class Scene;
 
 class ShadowMap {
 public:

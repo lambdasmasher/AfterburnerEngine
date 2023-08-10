@@ -9,6 +9,7 @@
 #include "FFTWater.hpp"
 #include "Vao.hpp"
 #include "InstancedArray.hpp"
+#include "ShadowMap.hpp"
 
 class Camera {
 public:
@@ -68,6 +69,7 @@ public:
     std::unique_ptr<Terrain> terrain;
     std::unique_ptr<FFTWater> fftwater;
     std::unique_ptr<Forest> forest;
+    std::unique_ptr<ShadowMap> shadowMap;
     glm::vec3 toLightVector;
     Texture *atmosphereTexture;
 };
