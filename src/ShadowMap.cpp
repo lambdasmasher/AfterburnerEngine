@@ -20,7 +20,8 @@ ShadowMap::ShadowMap(int cascades) : cascades(cascades) {
     float border[4] = {1.0f, 1.0f, 1.0f, 1.0f};
     glTexParameterfv(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_BORDER_COLOR, border);
 
-    glNamedFramebufferTexture(fboId, GL_DEPTH_ATTACHMENT, texArrayId, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, fboId);
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, texArrayId, 0);
 }
 
 ShadowMap::~ShadowMap() {
@@ -39,6 +40,7 @@ void ShadowMap::unbindFbo() {
 }
 
 void ShadowMap::update(Scene *scene) {
+    lightVpMats.clear();
     std::pair<float, float> subfrusta[3] = {
         {1.0f, 100.f}, {100.f, 1000.f}, {1000.f, 5000.f}
     };
