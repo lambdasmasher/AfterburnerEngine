@@ -66,6 +66,10 @@ Engine::Engine(int width, int height) :
     deferredShader(
         "res/shader/deferred.vert", nullptr, nullptr, nullptr, "res/shader/deferred.frag", nullptr,
         {"toLightVector", "cameraPos", "invProjMatrix", "invViewMatrix"}
+    ),
+    shadowShader(
+        "res/shader/shadow.vert", nullptr, nullptr, "res/shader/shadow.geom",
+        "res/shader/shadow.frag", nullptr, {"vpMatrices"}
     )
 {
     engine = this;

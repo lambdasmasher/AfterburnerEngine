@@ -61,6 +61,7 @@ private:
     Shader entityShader;
     Shader normalCompShader;
     Shader deferredShader;
+    Shader shadowShader;
 };
 
 #endif /* ENGINE */
