@@ -119,7 +119,7 @@ void Engine::renderShadowMap(Scene *scene) {
     glClear(GL_DEPTH_BUFFER_BIT);
     shadowShader.start();
     shadowShader.setMat4Array("vpMatrices",
-        scene->shadowMap->getMatrixValPtr(), scene->shadowMap->cascades);
+        scene->shadowMap->getMatrixValPtr(), scene->shadowMap->cascades.size() - 1);
     renderForestHelper(scene);
     shadowShader.stop();
     scene->shadowMap->unbindFbo();

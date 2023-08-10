@@ -5,12 +5,12 @@
 
 #define DEPTH_MAP_RESOLUTION 1024
 
-ShadowMap::ShadowMap(int cascades) : cascades(cascades) {
+ShadowMap::ShadowMap(const std::vector<float> &cascades) : cascades(cascades) {
     glGenFramebuffers(1, &fboId);
     glGenTextures(1, &texArrayId);
     glBindTexture(GL_TEXTURE_2D_ARRAY, texArrayId);
     glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_DEPTH_COMPONENT32F,
-        DEPTH_MAP_RESOLUTION, DEPTH_MAP_RESOLUTION, cascades + 1,
+        DEPTH_MAP_RESOLUTION, DEPTH_MAP_RESOLUTION, cascades.size(),
         0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
     
     glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -41,10 +41,8 @@ void ShadowMap::unbindFbo() {
 
 void ShadowMap::update(Scene *scene) {
     lightVpMats.clear();
-    std::pair<float, float> subfrusta[3] = {
-        {1.0f, 100.f}, {100.f, 1000.f}, {1000.f, 5000.f}
-    };
-    for (auto [near, far] : subfrusta) {
+    for (unsigned i = 1; i < cascades.size(); i++) {
+        float near = cascades[i - 1], far = cascades[i];
         float aspect = float(Engine::engine->getDisplayWidth()) / Engine::engine->getDisplayHeight();
         glm::mat4 proj = glm::perspective(glm::radians(scene->camera->fov), aspect, near, far);
         glm::mat4 invViewProj = glm::inverse(proj * scene->camera->viewMatrix);

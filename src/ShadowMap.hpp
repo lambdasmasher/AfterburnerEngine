@@ -9,7 +9,7 @@ class Scene;
 
 class ShadowMap {
 public:
-    ShadowMap(int cascades);
+    ShadowMap(const std::vector<float> &cascades);
     ~ShadowMap();
     void bindFbo();
     void unbindFbo();
@@ -19,7 +19,7 @@ public:
     }
     void update(Scene *scene);
     inline float* getMatrixValPtr() { return (float*)lightVpMats.data(); }
-    const int cascades;
+    const std::vector<float> cascades;
 private:
     std::vector<glm::mat4> lightVpMats;
     GLuint fboId;
