@@ -197,10 +197,7 @@ void Engine::renderWater(Scene *scene) {
     waterShader.stop();
 }
 
-void Engine::renderForest(Scene *scene) {
-    glDisable(GL_CULL_FACE);
-    entityShader.start();
-    entityShader.setMat4("vpMatrix", scene->camera->vpMatrix);
+void Engine::renderForestHelper(Scene *scene) {
     for (const auto &p : scene->forest->map) {
         p.first->mesh->bindWithIndices();
         p.first->texture->bind(0);
@@ -210,6 +207,12 @@ void Engine::renderForest(Scene *scene) {
         unsigned vertexCount = p.first->mesh->getVertexCount();
         glDrawElementsInstanced(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, NULL, p.second.size());
     }
+}
+void Engine::renderForest(Scene *scene) {
+    glDisable(GL_CULL_FACE);
+    entityShader.start();
+    entityShader.setMat4("vpMatrix", scene->camera->vpMatrix);
+    renderForestHelper(scene);
     entityShader.stop();
     glEnable(GL_CULL_FACE);
 }

@@ -44,6 +44,7 @@ private:
     glm::vec4 clipPlane;
     void renderTerrain(Scene *scene);
     void renderWater(Scene *scene);
+    void renderForestHelper(Scene *scene);
     void renderForest(Scene *scene);
     void renderReflection(Scene *scene);
     void renderRefraction(Scene *scene);
