@@ -3,7 +3,7 @@
 #include "Engine.hpp"
 #include <glm/gtx/transform.hpp>
 
-#define DEPTH_MAP_RESOLUTION 1024
+#define DEPTH_MAP_RESOLUTION 4096
 
 ShadowMap::ShadowMap(const std::vector<float> &cascades) : cascades(cascades) {
     glGenFramebuffers(1, &fboId);

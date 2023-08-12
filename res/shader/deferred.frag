@@ -49,7 +49,7 @@ vec3 blinnPhong(vec3 colour, vec3 normal, vec3 position, vec4 materialData) {
         shadow = 0.5;
     }
 
-    return shadow * (ambient + diffuse + specular);
+    return ambient + shadow * (diffuse + specular);
 }
 
 vec3 worldPosFromDepth(float depth) {
