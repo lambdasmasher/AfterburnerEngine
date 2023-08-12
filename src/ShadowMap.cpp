@@ -71,6 +71,9 @@ void ShadowMap::update(Scene *scene) {
             max = glm::max(max, p);
         }
 
+        min.z -= 100.f;
+        max.z += 100.f;
+
         glm::mat4 lightProj = glm::ortho(min.x, max.x, min.y, max.y, min.z, max.z);
         lightVpMats.push_back(lightProj * lightView);
     }
