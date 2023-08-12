@@ -17,7 +17,6 @@ uniform vec3 cameraPos;
 uniform mat4 invProjMatrix;
 uniform mat4 invViewMatrix;
 uniform int numCascades;
-uniform float cascades[8];
 uniform mat4 lightVps[8];
 
 float ambientFactor = 0.3;
