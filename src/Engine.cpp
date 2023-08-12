@@ -65,7 +65,7 @@ Engine::Engine(int width, int height) :
     ),
     deferredShader(
         "res/shader/deferred.vert", nullptr, nullptr, nullptr, "res/shader/deferred.frag", nullptr,
-        {"toLightVector", "cameraPos", "invProjMatrix", "invViewMatrix"}
+        {"toLightVector", "cameraPos", "invProjMatrix", "invViewMatrix", "numCascades", "cascades", "lightVps"}
     ),
     shadowShader(
         "res/shader/shadow.vert", nullptr, nullptr, "res/shader/shadow.geom",
@@ -250,6 +250,10 @@ void Engine::doDeferredShading(Scene *scene) {
     deferredShader.setVec3("cameraPos", cam->position);
     deferredShader.setMat4("invProjMatrix", glm::inverse(cam->projectionMatrix));
     deferredShader.setMat4("invViewMatrix", glm::inverse(cam->viewMatrix));
+    int numCascades = scene->shadowMap->cascades.size();
+    deferredShader.setInt("numCascades", numCascades);
+    deferredShader.setFloatArray("cascades", (float*)scene->shadowMap->cascades.data(), numCascades);
+    deferredShader.setMat4Array("lightVps", scene->shadowMap->getMatrixValPtr(), numCascades - 1);
     deferredFbo->bindColourAttachment(0, 0);
     deferredFbo->bindColourAttachment(1, 1);
     deferredFbo->bindColourAttachment(2, 2);

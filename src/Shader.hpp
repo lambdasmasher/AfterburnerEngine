@@ -28,6 +28,8 @@ public:
 
     inline void setFloat(const char *name, float f)
         { glUniform1f(locations[name], f); }
+    inline void setFloatArray(const char *name, float *val, int cnt)
+        { glUniform1fv(locations[name], cnt, val); }
     inline void setVec3(const char *name, const glm::vec3 &v)
         { glUniform3f(locations[name], v.x, v.y, v.z); }
     inline void setVec4(const char *name, const glm::vec4 &v)
