@@ -45,7 +45,7 @@ vec3 blinnPhong(vec3 colour, vec3 normal, vec3 position, vec4 materialData) {
         }
     }
     ndc = ndc * 0.5 + 0.5;
-    if (texture(shadowMap, vec3(ndc.xy, layer)).r < ndc.z) {
+    if (texture(shadowMap, vec3(ndc.xy, layer)).r + 0.01 < ndc.z) {
         shadow = 0.5;
     }
 
