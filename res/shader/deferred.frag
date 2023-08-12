@@ -34,7 +34,22 @@ vec3 blinnPhong(vec3 colour, vec3 normal, vec3 position, vec4 materialData) {
     float spec = pow(max(dot(normal, halfwayDir), 0.0), smoothness);
     vec3 specular = lightColour * spec * reflectivity;
 
-    return ambient + diffuse + specular;
+    float shadow = 1.0;
+    int layer;
+    vec3 ndc;
+    for (layer = 0; layer < numCascades; layer++) {
+        vec4 clip = lightVps[layer] * vec4(position, 1.0);
+        ndc = clip.xyz / clip.w;
+        if (all(lessThan(abs(ndc), vec3(1.0)))) {
+            break;
+        }
+    }
+    ndc = ndc * 0.5 + 0.5;
+    if (texture(shadowMap, vec3(ndc.xy, layer)).r < ndc.z) {
+        shadow = 0.5;
+    }
+
+    return shadow * (ambient + diffuse + specular);
 }
 
 vec3 worldPosFromDepth(float depth) {
@@ -58,5 +73,4 @@ void main(void) {
     } else {
         outColour = texture(atmosphereTexture, position - cameraPos);
     }
-    outColour = texture(shadowMap, vec3(uv, 0));
 }
