@@ -19,7 +19,7 @@ vec3 microVariation() {
     vec3 microColour = texture(tex, texCoords * microTiling).rgb * microTint;
 
     float microVariationTiling = 1.0;
-    vec3 microVariationTint = vec3(0.75, 0.95, 0.51);
+    vec3 microVariationTint = vec3(0.95, 0.75, 0.51);
     vec3 microColourVariation = texture(tex, texCoords * microVariationTiling).g * microVariationTint;
 
     float microVariationAlphaTiling = 0.02;
