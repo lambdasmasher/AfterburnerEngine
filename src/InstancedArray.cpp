@@ -5,12 +5,10 @@
 #define FLOATS_PER_INSTANCE 16
 #define BYTES_PER_INSTANCE (sizeof(float) * FLOATS_PER_INSTANCE)
 
-InstancedArray::InstancedArray(unsigned numInstances) {
+InstancedArray::InstancedArray(unsigned numInstances, Vao *vao, unsigned start) {
     glGenBuffers(1, &vboId);
     data.resize(FLOATS_PER_INSTANCE * numInstances);
-}
 
-void InstancedArray::setupAttributes(Vao *vao, unsigned start) {
     unsigned attribs[] = {4, 4, 4, 4};
     vao->bind();
     glBindBuffer(GL_ARRAY_BUFFER, vboId);

@@ -1,16 +1,14 @@
 #ifndef INSTANCEDARRAY
 #define INSTANCEDARRAY
 
-#include "GLResource.hpp"
 #include "Vao.hpp"
 
 class Entity;
 
-class InstancedArray : public GLResource {
+class InstancedArray {
 public:
-    InstancedArray(unsigned numInstances);
+    InstancedArray(unsigned numInstances, Vao *vao, unsigned start);
     ~InstancedArray() { glDeleteBuffers(1, &vboId); }
-    void setupAttributes(Vao *vao, unsigned start);
     void add(Entity *entity);
     void flush();
 private:
