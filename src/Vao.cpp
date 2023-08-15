@@ -14,8 +14,9 @@ Vao::~Vao() {
     glDeleteBuffers(1, &indexBufferId);
 }
 
-void Vao::withInstancedArray(unsigned numInstances) {
+Vao* Vao::withInstancedArray(unsigned numInstances) {
     instancedArray.reset(new InstancedArray(numInstances, this, vboIds.size()));
+    return this;
 }
 
 struct Vertex {

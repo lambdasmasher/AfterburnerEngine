@@ -21,7 +21,7 @@ public:
     inline void bindWithIndices() { bind(); glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferId); }
     inline unsigned getVertexCount() { return vertexCount; }
 
-    void withInstancedArray(unsigned numInstances);
+    Vao* withInstancedArray(unsigned numInstances);
     static Vao* fromObj(const char *file);
 private:
     void addVbo(const std::vector<float> &data, int group);
