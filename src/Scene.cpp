@@ -3,6 +3,7 @@
 #include "Engine.hpp"
 
 #include <glm/gtx/transform.hpp>
+#include <random>
 
 void Camera::move() {
     float delta = Engine::engine->delta();
@@ -87,18 +88,22 @@ void Entity::computeMatrix() {
     matrix = glm::scale(matrix, scale);
 }
 
-#include <random>
 Forest::Forest(Terrain *terrain) {
     trunkModels[0] = std::make_unique<Model>(Vao::fromObj("res/suzanne.obj")->withInstancedArray(10000), Texture::solidColour(0.5f, 0.5f, 0.5, 1.0));
     leafModels[0] = std::make_unique<Model>(Vao::fromObj("res/suzanne.obj")->withInstancedArray(10000), Texture::solidColour(0.5f, 0.5f, 0.5, 1.0));
 
     std::mt19937 rng(42);
-    std::uniform_real_distribution<float> pos(-100.f, 100.f);
+    std::uniform_real_distribution<float> pos(0.f, terrain->tileSize * terrain->numTiles);
     std::uniform_real_distribution<float> rot(0.f, 360.f);
     for (int i = 0; i < 100; i++) {
-        glm::vec3 position(pos(rng), glm::abs(pos(rng)) + 10.f, pos(rng));
+        float x = pos(rng); float z = pos(rng);
+        float y = terrain->getHeight(x, z);
+        if (y < 0.f) {
+            i--;
+            continue;
+        }
         trees.emplace_back(
-            position,
+            glm::vec3(x, y, z),
             glm::vec3(0.f, rot(rng), 0.f),
             glm::vec3(5.f)
         );
