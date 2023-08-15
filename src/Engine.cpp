@@ -130,6 +130,7 @@ void Engine::render(Scene *scene) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_CULL_FACE);
 
+    scene->forest->update(scene->camera.get());
     renderShadowMap(scene);
 
     glEnable(GL_CLIP_DISTANCE0);
@@ -214,11 +215,8 @@ void Engine::renderForestHelper(Scene *scene) {
     for (const auto &p : scene->forest->map) {
         p.first->mesh->bindWithIndices();
         p.first->texture->bind(0);
-        for (Entity *entity : p.second)
-            scene->forest->treeArray->add(entity);
-        scene->forest->treeArray->flush();
         unsigned vertexCount = p.first->mesh->getVertexCount();
-        glDrawElementsInstanced(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, NULL, p.second.size());
+        glDrawElementsInstanced(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, NULL, p.second);
     }
 }
 void Engine::renderForest(Scene *scene) {

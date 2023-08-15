@@ -57,10 +57,11 @@ class Forest {
     friend class Engine;
 public:
     Forest(Terrain *terrain);
+    void update(Camera *camera);
     std::unique_ptr<Model> trunkModels[3], leafModels[3];
 private:
-    InstancedArray *treeArray;
-    std::unordered_map<Model*, std::vector<Entity*>> map;
+    std::vector<Entity> trees;
+    std::unordered_map<Model*, unsigned> map;
 };
 
 class Scene {
