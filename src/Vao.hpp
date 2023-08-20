@@ -22,7 +22,7 @@ public:
     inline unsigned getVertexCount() { return vertexCount; }
 
     Vao* withInstancedArray(unsigned numInstances);
-    static Vao* fromObj(const char *file);
+    static Vao* fromObj(const char *file, unsigned shapeMask = -1U);
 private:
     void addVbo(const std::vector<float> &data, int group);
     void setIndexBuffer(const std::vector<unsigned> &indices);

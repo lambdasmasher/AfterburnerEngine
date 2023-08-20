@@ -148,12 +148,12 @@ static std::vector<glm::vec2> poissonDisc(float radius, float extent) {
 }
 
 Forest::Forest(Terrain *terrain) {
-    trunkModels[0] = std::make_unique<Model>(Vao::fromObj("res/suzanne.obj")->withInstancedArray(10000), Texture::solidColour(0.5f, 0.5f, 0.5, 1.0));
-    leafModels[0] = std::make_unique<Model>(Vao::fromObj("res/suzanne.obj")->withInstancedArray(10000), Texture::solidColour(0.5f, 0.5f, 0.5, 1.0));
+    trunkModels[0] = std::make_unique<Model>(Vao::fromObj("res/fir.obj", 2)->withInstancedArray(10000), Texture::loadFromImage("res/fir_trunk.tga"));
+    leafModels[0] = std::make_unique<Model>(Vao::fromObj("res/fir.obj", 1)->withInstancedArray(10000), Texture::loadFromImage("res/fir_leaves.tga"));
 
     std::mt19937 rng(42);
     std::uniform_real_distribution<float> rot(0.f, 360.f);
-    std::vector<glm::vec2> positions = poissonDisc(10.0f, terrain->tileSize * terrain->numTiles);
+    std::vector<glm::vec2> positions = poissonDisc(100.0f, terrain->tileSize * terrain->numTiles);
     for (glm::vec2 pos : positions) {
         float x = pos.x, z = pos.y;
         float y = terrain->getHeight(x, z);
@@ -163,7 +163,7 @@ Forest::Forest(Terrain *terrain) {
         trees.emplace_back(
             glm::vec3(x, y, z),
             glm::vec3(0.f, rot(rng), 0.f),
-            glm::vec3(5.f)
+            glm::vec3(0.1f)
         );
         trees.back().computeMatrix();
     }
@@ -173,7 +173,10 @@ void Forest::update(Camera *camera) {
     map.clear();
     for (Entity &tree : trees) {
         trunkModels[0]->mesh->instancedArray->add(&tree);
+        leafModels[0]->mesh->instancedArray->add(&tree);
     }
     trunkModels[0]->mesh->instancedArray->flush();
+    leafModels[0]->mesh->instancedArray->flush();
     map[trunkModels[0].get()] = trees.size();
+    map[leafModels[0].get()] = trees.size();
 }

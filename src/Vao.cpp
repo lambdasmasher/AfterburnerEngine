@@ -27,7 +27,7 @@ struct Vertex {
         return memcmp(this, &that, sizeof(Vertex)) < 0;
     }
 };
-Vao* Vao::fromObj(const char *file) {
+Vao* Vao::fromObj(const char *file, unsigned shapeMask) {
     tinyobj::attrib_t attrib;
     std::vector<tinyobj::shape_t> shapes;
     std::vector<tinyobj::material_t> materials;
@@ -41,7 +41,11 @@ Vao* Vao::fromObj(const char *file) {
     std::map<Vertex, unsigned> vertices; 
     std::vector<unsigned> indices;
     std::vector<float> positions, texcoords, normals;
-    for (const auto &shape : shapes) {
+    for (unsigned s = 0; s < shapes.size(); s++) {
+        if (!((shapeMask >> s) & 1)) {
+            continue;
+        }
+        const auto &shape = shapes[s];
         for (const auto &index : shape.mesh.indices) {
             Vertex v;
             for (unsigned i = 0; i < 3; i++) {
