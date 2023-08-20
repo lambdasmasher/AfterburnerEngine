@@ -88,18 +88,76 @@ void Entity::computeMatrix() {
     matrix = glm::scale(matrix, scale);
 }
 
+static bool isValid(glm::vec2 candidate, float extent, float cellSize, float radius, int dim,
+                    const std::vector<glm::vec2> &points,
+                    const std::vector<std::vector<int>> &grid) {
+    if (candidate.x > 0.0f && candidate.x < extent && candidate.y > 0.0f && candidate.y < extent) {
+        int cellX = (int)(candidate.x / cellSize);
+        int cellY = (int)(candidate.y / cellSize);
+        for (int i = cellX - 2; i <= cellX + 2; i++) {
+            for (int j = cellY - 2; j <= cellY + 2; j++) {
+                if (i >= 0 && i < dim && j >= 0 && j < dim) {
+                    int pointIndex = grid[i][j] - 1;
+                    if (pointIndex != -1) {
+                        float dist = glm::distance(candidate, points[pointIndex]);
+                        if (dist < radius) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+    return false;
+}
+static std::vector<glm::vec2> poissonDisc(float radius, float extent) {
+    float cellSize = radius / sqrtf(2.0f);
+
+    int dim = int(ceilf(extent / cellSize));
+    std::vector<std::vector<int>> grid(dim, std::vector<int>(dim, 0));
+    std::vector<glm::vec2> points;
+    std::vector<glm::vec2> spawnPoints;
+    std::mt19937 rng(1337);
+    
+    spawnPoints.emplace_back(extent / 2.0f, extent / 2.0f);
+    while (!spawnPoints.empty()) {
+        int spawnIndex =
+            std::uniform_int_distribution<int>(0, spawnPoints.size()-1)(rng);
+        glm::vec2 spawnCenter = spawnPoints[spawnIndex];
+        bool accepted = false;
+        for (int i = 0; i < 30; i++) {
+            float angle =
+                std::uniform_real_distribution<float>(0.0f, 2.0f*M_PIf)(rng);
+            glm::vec2 dir(cosf(angle), sinf(angle));
+            glm::vec2 candidate = spawnCenter + dir
+                * std::uniform_real_distribution<float>(radius, 2.0f*radius)(rng);
+            if (isValid(candidate, extent, cellSize, radius, dim, points, grid)) {
+                points.push_back(candidate);
+                spawnPoints.push_back(candidate);
+                grid[(int)(candidate.x/cellSize)][(int)(candidate.y/cellSize)] = points.size();
+                accepted = true;
+                break;
+            }
+        }
+        if (!accepted) {
+            spawnPoints.erase(spawnPoints.begin() + spawnIndex);
+        }
+    }
+    return points;
+}
+
 Forest::Forest(Terrain *terrain) {
     trunkModels[0] = std::make_unique<Model>(Vao::fromObj("res/suzanne.obj")->withInstancedArray(10000), Texture::solidColour(0.5f, 0.5f, 0.5, 1.0));
     leafModels[0] = std::make_unique<Model>(Vao::fromObj("res/suzanne.obj")->withInstancedArray(10000), Texture::solidColour(0.5f, 0.5f, 0.5, 1.0));
 
     std::mt19937 rng(42);
-    std::uniform_real_distribution<float> pos(0.f, terrain->tileSize * terrain->numTiles);
     std::uniform_real_distribution<float> rot(0.f, 360.f);
-    for (int i = 0; i < 100; i++) {
-        float x = pos(rng); float z = pos(rng);
+    std::vector<glm::vec2> positions = poissonDisc(10.0f, terrain->tileSize * terrain->numTiles);
+    for (glm::vec2 pos : positions) {
+        float x = pos.x, z = pos.y;
         float y = terrain->getHeight(x, z);
-        if (y < 0.f) {
-            i--;
+        if (y < 0.0f) {
             continue;
         }
         trees.emplace_back(
