@@ -73,6 +73,7 @@ public:
     std::unique_ptr<ShadowMap> shadowMap;
     glm::vec3 toLightVector;
     Texture *atmosphereTexture;
+    float fogDensity, fogGradient;
 };
 
 #endif /* SCENE */

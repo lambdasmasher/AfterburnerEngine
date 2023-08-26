@@ -18,6 +18,8 @@ uniform mat4 invProjMatrix;
 uniform mat4 invViewMatrix;
 uniform int numCascades;
 uniform mat4 lightVps[8];
+uniform float fogDensity;
+uniform float fogGradient;
 
 float ambientFactor = 0.3;
 vec3 lightColour = vec3(1.0);
@@ -49,7 +51,11 @@ vec3 blinnPhong(vec3 colour, vec3 normal, vec3 position, vec4 materialData) {
         shadow = 0.5;
     }
 
-    return ambient + shadow * (diffuse + specular);
+    vec3 ret = ambient + shadow * (diffuse + specular);
+    float dist = length(cameraPos - position);
+    float visibility = exp(-pow((dist * fogDensity), fogGradient));
+    visibility = clamp(visibility, 0.0, 1.0);
+    return mix(vec3(1.0), ret, visibility);
 }
 
 vec3 worldPosFromDepth(float depth) {

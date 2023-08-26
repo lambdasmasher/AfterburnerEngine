@@ -9,6 +9,8 @@ int main(void) {
             Texture::loadFromImage("res/ground.png"), "res/heightmap.bmp", 100.f, 15.f);
     scene.toLightVector = glm::vec3(0.f, 1.f, 0.5f);
     scene.atmosphereTexture = Texture::atmosphereCubemap(scene.toLightVector, 512);
+    scene.fogDensity = 0.0003f;
+    scene.fogGradient = 1.0f;
 
     scene.fftwater = std::make_unique<FFTWater>(512, 1.25f, 38.0f, 2000.0f, glm::vec2(1, 1), 1.7f);
     scene.fftwater->position = glm::vec3(-3200.f, 0.f, -3200.f);

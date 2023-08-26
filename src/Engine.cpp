@@ -65,7 +65,7 @@ Engine::Engine(int width, int height) :
     ),
     deferredShader(
         "res/shader/deferred.vert", nullptr, nullptr, nullptr, "res/shader/deferred.frag", nullptr,
-        {"toLightVector", "cameraPos", "invProjMatrix", "invViewMatrix", "numCascades", "lightVps"}
+        {"toLightVector", "cameraPos", "invProjMatrix", "invViewMatrix", "numCascades", "lightVps", "fogDensity", "fogGradient"}
     ),
     shadowShader(
         "res/shader/shadow.vert", nullptr, nullptr, "res/shader/shadow.geom",
@@ -251,6 +251,8 @@ void Engine::doDeferredShading(Scene *scene) {
     int numCascades = scene->shadowMap->cascades.size() - 1;
     deferredShader.setInt("numCascades", numCascades);
     deferredShader.setMat4Array("lightVps", scene->shadowMap->getMatrixValPtr(), numCascades);
+    deferredShader.setFloat("fogDensity", scene->fogDensity);
+    deferredShader.setFloat("fogGradient", scene->fogGradient);
     deferredFbo->bindColourAttachment(0, 0);
     deferredFbo->bindColourAttachment(1, 1);
     deferredFbo->bindColourAttachment(2, 2);
