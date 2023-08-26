@@ -11,10 +11,10 @@ int main(void) {
     scene.atmosphereTexture = Texture::atmosphereCubemap(scene.toLightVector, 512);
 
     scene.fftwater = std::make_unique<FFTWater>(512, 1.25f, 38.0f, 2000.0f, glm::vec2(1, 1), 1.7f);
-    scene.fftwater->position = glm::vec3(0.f, 0.f, 0.f);
-    scene.fftwater->numTiles = 64;
-    scene.fftwater->tileSize = 25.f;
-    scene.fftwater->tiling = 20.f;
+    scene.fftwater->position = glm::vec3(-3200.f, 0.f, -3200.f);
+    scene.fftwater->numTiles = 128;
+    scene.fftwater->tileSize = 50.f;
+    scene.fftwater->tiling = 80.f;
 
     scene.forest = std::make_unique<Forest>(scene.terrain.get());
     scene.shadowMap = std::make_unique<ShadowMap>(std::vector<float>{1.0f, 300.f, 1000.f, 5000.f});
