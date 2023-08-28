@@ -23,7 +23,7 @@ uniform float fogGradient;
 
 float ambientFactor = 0.3;
 vec3 lightColour = vec3(1.0);
-vec3 blinnPhong(vec3 colour, vec3 normal, vec3 position, vec4 materialData) {
+vec3 blinnPhong(vec3 colour, vec3 normal, vec3 position, vec4 materialData, vec3 skyColour) {
     vec3 toLightDir = normalize(toLightVector);
     vec3 ambient = colour * ambientFactor;
     vec3 diffuse = colour * max(dot(toLightDir, normal), 0.0);
@@ -55,7 +55,7 @@ vec3 blinnPhong(vec3 colour, vec3 normal, vec3 position, vec4 materialData) {
     float dist = length(cameraPos - position);
     float visibility = exp(-pow((dist * fogDensity), fogGradient));
     visibility = clamp(visibility, 0.0, 1.0);
-    return mix(vec3(1.0), ret, visibility);
+    return mix(skyColour, ret, visibility);
 }
 
 vec3 worldPosFromDepth(float depth) {
@@ -73,10 +73,10 @@ void main(void) {
     vec3 normal = normalize(rawNormal.xyz);
     vec3 position = worldPosFromDepth(texture(depthTexture, uv).r);
     vec4 materialData = texture(materialTexture, uv);
+    vec4 skyColour = texture(atmosphereTexture, position - cameraPos);
+    outColour = skyColour;
     if (rawNormal.a > 0.5) {
-        outColour = vec4(blinnPhong(colour, normal, position, materialData), 1.0);
+        outColour = vec4(blinnPhong(colour, normal, position, materialData, skyColour.rgb), 1.0);
         outColour = mix(outColour, texture(refractionTexture, uv), materialData.z);
-    } else {
-        outColour = texture(atmosphereTexture, position - cameraPos);
     }
 }
