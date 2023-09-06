@@ -1,4 +1,5 @@
 #include <glm/glm.hpp>
+#include <glm/gtx/transform.hpp>
 using namespace glm;
 
 static vec2 rsi(vec3 r0, vec3 rd, float radius) {
@@ -14,8 +15,18 @@ static vec2 rsi(vec3 r0, vec3 rd, float radius) {
 }
 
 vec3 computeAtmosphereColour(vec3 toLightVector, vec3 ray) {
-    ray.y += 0.1f;
     ray = glm::normalize(ray);
+    float pitch = asinf(ray.y);
+    float dest = pitch;
+    dest += radians(90.0f);
+    dest /= radians(180.f);
+    dest *= radians(170.0f);
+    dest -= radians(80.0f);
+    dest = max(dest, radians(5.0f));
+    float diff = dest - pitch;
+    mat4 mat = mat4(1.0f);
+    mat = rotate(mat, diff, normalize(vec3(-ray.z, 0.0f, ray.x)));
+    ray = vec3(mat * vec4(ray, 1.0f));
     const vec3 sun = normalize(toLightVector);
     const vec3 origin = vec3(0, 6372e3, 0);
     const float intensity = 48.0f;
