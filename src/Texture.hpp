@@ -12,7 +12,7 @@ public:
         GLuint id; glGenTextures(1, &id); return id;
     }()), texType(texType), width(width), height(height) {}
     static Texture* solidColour(float r, float g, float b, float a);
-    static Texture* loadFromImage(const char *path);
+    static Texture* loadFromImage(const char *path, bool gamma = false);
     static Texture* loadHeightmap(const char *path, std::vector<uint16_t> &heights);
     static Texture* texStorage(int width, int height);
     static Texture* dynamicMipmap(int N);
