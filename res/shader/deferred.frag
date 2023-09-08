@@ -77,6 +77,10 @@ void main(void) {
     outColour = skyColour;
     if (rawNormal.a > 0.5) {
         outColour = vec4(blinnPhong(colour, normal, position, materialData, skyColour.rgb), 1.0);
+        float gamma = materialData.a;
+        if (gamma > 0.01) {
+            outColour.rgb = pow(outColour.rgb, vec3(1.0 / gamma));
+        }
         outColour = mix(outColour, texture(refractionTexture, uv), materialData.z);
     }
 }
