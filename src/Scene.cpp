@@ -148,12 +148,12 @@ static std::vector<glm::vec2> poissonDisc(float radius, float extent) {
 }
 
 Forest::Forest(Terrain *terrain) {
-    trunkModels[0] = std::make_unique<Model>(Vao::fromObj("res/fir.obj", 2)->withInstancedArray(10000), Texture::loadFromImage("res/fir_trunk.tga"));
-    leafModels[0] = std::make_unique<Model>(Vao::fromObj("res/fir.obj", 1)->withInstancedArray(10000), Texture::loadFromImage("res/fir_leaves.tga"));
+    trunkModels[0] = std::make_unique<Model>(Vao::fromObj("res/pine.obj", 1)->withInstancedArray(10000), Texture::loadFromImage("res/pine_trunk.jpeg"));
+    leafModels[0] = std::make_unique<Model>(Vao::fromObj("res/pine.obj", 2)->withInstancedArray(10000), Texture::loadFromImage("res/pine_leaves.png"));
 
     std::mt19937 rng(42);
     std::uniform_real_distribution<float> rot(0.f, 360.f);
-    std::vector<glm::vec2> positions = poissonDisc(100.0f, terrain->tileSize * terrain->numTiles);
+    std::vector<glm::vec2> positions = poissonDisc(20.0f, terrain->tileSize * terrain->numTiles);
     for (glm::vec2 pos : positions) {
         float x = pos.x, z = pos.y;
         float y = terrain->getHeight(x, z);
@@ -163,7 +163,7 @@ Forest::Forest(Terrain *terrain) {
         trees.emplace_back(
             glm::vec3(x, y, z),
             glm::vec3(0.f, rot(rng), 0.f),
-            glm::vec3(0.1f)
+            glm::vec3(3.f)
         );
         trees.back().computeMatrix();
     }
