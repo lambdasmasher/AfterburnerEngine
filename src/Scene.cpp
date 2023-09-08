@@ -148,8 +148,8 @@ static std::vector<glm::vec2> poissonDisc(float radius, float extent) {
 }
 
 Forest::Forest(Terrain *terrain) {
-    trunkModels[0] = std::make_unique<Model>(Vao::fromObj("res/pine.obj", 1)->withInstancedArray(10000), Texture::loadFromImage("res/pine_trunk.jpeg"));
-    leafModels[0] = std::make_unique<Model>(Vao::fromObj("res/pine.obj", 2)->withInstancedArray(10000), Texture::loadFromImage("res/pine_leaves.png"));
+    trunkModels[0] = std::make_unique<Model>(Vao::fromObj("res/pine.obj", 1)->withInstancedArray(10000), Texture::loadFromImage("res/pine_trunk.jpeg", true));
+    leafModels[0] = std::make_unique<Model>(Vao::fromObj("res/pine.obj", 2)->withInstancedArray(10000), Texture::loadFromImage("res/pine_leaves.png", true));
 
     std::mt19937 rng(42);
     std::uniform_real_distribution<float> rot(0.f, 360.f);

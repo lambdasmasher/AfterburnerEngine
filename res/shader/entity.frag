@@ -11,7 +11,8 @@ layout (binding = 0) uniform sampler2D modelTexture;
 
 void main(void) {
     outColour = texture(modelTexture, uv);
-    if (outColour.a < 0.5) discard;
+    outColour.g += 0.05;
+    if (outColour.a < 0.2) discard;
     outNormal = vec4(normal, 1.0);
-    outMaterial = vec4(0.0, 1.0, 0.0, 0.0);
+    outMaterial = vec4(0.0, 1.0, 0.0, 1.7);
 }
