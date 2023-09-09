@@ -23,6 +23,26 @@ int main(void) {
     scene.forest = std::make_unique<Forest>(scene.terrain.get());
     scene.shadowMap = std::make_unique<ShadowMap>(std::vector<float>{1.0f, 100.f, 300.f, 1000.f, 2000.f, 5000.f});
 
+    // entire island view
+    // scene.camera->position = glm::vec3(1898.41785, 423.51843, 1326.46765);
+    // scene.camera->pitch = -26.32413; scene.camera->yaw = 57.87508;
+
+    // more bay
+    // scene.camera->position = glm::vec3(1024.35535, 119.95562, 753.73212);
+    // scene.camera->pitch = -17.06867; scene.camera->yaw = 55.45488;
+
+    // more valley
+    // scene.camera->position = glm::vec3(1030.44836, 186.30179, 743.81372);
+    // scene.camera->pitch = -17.06867; scene.camera->yaw = 57.63961;
+
+    // balance
+    // scene.camera->position = glm::vec3(1007.35303, 151.30853, 729.17944);
+    // scene.camera->pitch = -14.83500; scene.camera->yaw = 57.63961;
+
+    // forest view
+    // scene.camera->position = glm::vec3(725.16962, 63.12212, 975.39551);
+    // scene.camera->pitch = -11.03120; scene.camera->yaw = -8.99225;
+
     while (!engine.windowShouldClose()) {
         if (engine.isKeyDown(GLFW_KEY_C)) {
             printf("scene.camera->position = glm::vec3(%.5f, %.5f, %.5f);\n",
