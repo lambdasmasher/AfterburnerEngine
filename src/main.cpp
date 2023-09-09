@@ -1,5 +1,7 @@
 #include "Engine.hpp"
 
+#include <stdio.h>
+
 int main(void) {
     Engine engine(1920, 1080);
 
@@ -21,17 +23,13 @@ int main(void) {
     scene.forest = std::make_unique<Forest>(scene.terrain.get());
     scene.shadowMap = std::make_unique<ShadowMap>(std::vector<float>{1.0f, 100.f, 300.f, 1000.f, 2000.f, 5000.f});
 
-    // ocean
-    // scene.camera->position = glm::vec3(481.821045, 52.152992, 371.357758);
-    // scene.camera->pitch = -36.282;
-    // scene.camera->yaw = -119.2336;
-
-    // lake
-    // scene.camera->position = glm::vec3(165.735336, 11.286901, 135.532547);
-    // scene.camera->pitch = -17.967747;
-    // scene.camera->yaw = -485.757751;
-
     while (!engine.windowShouldClose()) {
+        if (engine.isKeyDown(GLFW_KEY_C)) {
+            printf("scene.camera->position = glm::vec3(%.5f, %.5f, %.5f);\n",
+                scene.camera->position.x, scene.camera->position.y, scene.camera->position.z);
+            printf("scene.camera->pitch = %.5f; scene.camera->yaw = %.5f;\n",
+                scene.camera->pitch, scene.camera->yaw);
+        }
         scene.camera->move();
         scene.camera->update();
         engine.render(&scene);

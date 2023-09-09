@@ -25,8 +25,8 @@ GLWrapper::GLWrapper(int width, int height) {
     glfwSwapInterval(1);
     glewInit();
 
-    glEnable(GL_DEBUG_OUTPUT);
-    glDebugMessageCallback(MessageCallback, 0);
+    // glEnable(GL_DEBUG_OUTPUT);
+    // glDebugMessageCallback(MessageCallback, 0);
 }
 GLWrapper::~GLWrapper() {
     GLResource::cleanup();
