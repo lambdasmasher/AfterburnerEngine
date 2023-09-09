@@ -47,7 +47,10 @@ vec3 blinnPhong(vec3 colour, vec3 normal, vec3 position, vec4 materialData, vec3
         }
     }
     ndc = ndc * 0.5 + 0.5;
-    if (texture(shadowMap, vec3(ndc.xy, layer)).r + 0.01 < ndc.z) {
+    float cascades[] = {1, 100, 300, 1000, 2000, 5000};
+    float bias = 4.0;
+    bias *= (1.0 / (cascades[layer+1]));
+    if (texture(shadowMap, vec3(ndc.xy, layer)).r + bias < ndc.z) {
         shadow = 0.5;
     }
 

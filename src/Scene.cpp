@@ -153,17 +153,18 @@ Forest::Forest(Terrain *terrain) {
 
     std::mt19937 rng(42);
     std::uniform_real_distribution<float> rot(0.f, 360.f);
-    std::vector<glm::vec2> positions = poissonDisc(20.0f, terrain->tileSize * terrain->numTiles);
+    std::uniform_real_distribution<float> scl(3.f, 5.f);
+    std::vector<glm::vec2> positions = poissonDisc(12.0f, terrain->tileSize * terrain->numTiles);
     for (glm::vec2 pos : positions) {
         float x = pos.x, z = pos.y;
         float y = terrain->getHeight(x, z);
-        if (y < 0.0f) {
+        if (y < 30.0f) {
             continue;
         }
         trees.emplace_back(
             glm::vec3(x, y, z),
             glm::vec3(0.f, rot(rng), 0.f),
-            glm::vec3(3.f)
+            glm::vec3(3.f, scl(rng), 3.f)
         );
         trees.back().computeMatrix();
     }
