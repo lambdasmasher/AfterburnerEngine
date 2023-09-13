@@ -1,7 +1,7 @@
 # Afterburner Engine
 ### A homemade graphics engine, written in C++ and using OpenGL for rendering.
-![](/screenshots/close.png)
-![](/screenshots/far.png)
+![](/screenshots/cover.png)
+![](/screenshots/reflection.png)
 
 ## Features
 ### Inverse Fast Fourier Transform based ocean water simulation
